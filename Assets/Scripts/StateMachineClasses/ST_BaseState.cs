@@ -1,25 +1,20 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class ST_Tank_Chase : ST_BaseTankState
+
+public abstract class ST_State : MonoBehaviour
 {
+
     // setting up to enter the state
-    public override Type EnterState()
-    {
-        return null;
-    }
+    public abstract Type EnterState();
 
     // anything that needs to be reset or changed once the player leaves the stage
-    public override Type LeaveState()
-    {
-        return null;
-    }
+    public abstract Type LeaveState();
 
     // logic that runs every physics update inside of the controller
-    public override Type StateLogic()
-    {
-        return null;
-    }
+    public abstract Type StateLogic();
 }
+
+
