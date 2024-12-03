@@ -13,7 +13,10 @@ public class ST_Base_Tank : AITank
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
     public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     /*!< <c>enemyBasesFound</c> stores all enemybases that are visible within the tanks sensor. */
 
-    public ST_Controller controller;
+    public ST_Controller controller; // the tank controller
+    public Transform calcTransform; //a transform used for more complex calculations
+
+
     public GameObject enemyTank;        /*!< <c>enemyTank</c> stores a reference to a target enemy tank. 
                                         * This should be taken from <c>enemyTanksFound</c>, only whilst within the tank sensor. 
                                         * Reference should be removed and refreshed every update. */

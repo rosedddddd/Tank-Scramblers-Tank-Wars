@@ -82,7 +82,7 @@ public class ST_Controller : MonoBehaviour
         ST_BaseTankState[] stateReferences = states.Values.ToArray();
         foreach (var stateReference in stateReferences)
         {
-            stateReference.controller = this;
+            stateReference.tank = this.tank;
         }
     }
 
