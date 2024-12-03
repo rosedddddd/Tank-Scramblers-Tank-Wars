@@ -104,6 +104,7 @@ Transform:
   - {fileID: 5585227817571421724}
   - {fileID: 8621413202224855854}
   - {fileID: 3322394534008834636}
+  - {fileID: 1450709761607131827}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!54 &5129924307517147187
@@ -298,6 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   controller: {fileID: 8149242142671988081}
   calcTransform: {fileID: 3322394534008834636}
+  enemyLastSeen: {fileID: 1450709761607131827}
   enemyTank: {fileID: 0}
   consumable: {fileID: 0}
   enemyBase: {fileID: 0}
@@ -5541,6 +5543,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6075832123667369233
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1450709761607131827}
+  m_Layer: 0
+  m_Name: LastSeenEnemyPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1450709761607131827
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6075832123667369233}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.12776184, y: 0.8147497, z: 0.31741333}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4800434088889002851}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6092545790163441459
 GameObject:
   m_ObjectHideFlags: 0

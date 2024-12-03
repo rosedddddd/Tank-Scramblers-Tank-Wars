@@ -15,6 +15,7 @@ public class ST_Base_Tank : AITank
 
     public ST_Controller controller; // the tank controller
     public Transform calcTransform; //a transform used for more complex calculations
+    public Transform enemyLastSeen; //last seen spot for enemy tank position
 
 
     public GameObject enemyTank;        /*!< <c>enemyTank</c> stores a reference to a target enemy tank. 
@@ -38,6 +39,8 @@ public class ST_Base_Tank : AITank
     /// </summary>
     public override void AITankStart()
     {
+        calcTransform.parent = null;
+        enemyLastSeen.parent = null;
         controller.ControllerStart();
     }
 
@@ -48,6 +51,10 @@ public class ST_Base_Tank : AITank
     /// </summary>
     public override void AITankUpdate()
     {
+        if (VisibleEnemyTanks.Count > 0)
+        {
+            enemyLastSeen.position = VisibleEnemyTanks.Keys.First().transform.position;
+        }
         controller.ControllerUpdate();
     }
 

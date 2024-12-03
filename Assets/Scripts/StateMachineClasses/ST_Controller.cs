@@ -65,7 +65,7 @@ public class ST_Controller : MonoBehaviour
 
         if (curState == null)
         {
-            curState = states.Keys.First();
+            curState = typeof(ST_Tank_Attack);
         }
     }
 
