@@ -52,6 +52,26 @@ public class ST_Tank_Attack : ST_BaseTankState
         tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
         tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
 
+        if (tank.VisibleEnemyTanks.Count <= 0 && tank.VisibleEnemyBases.Count > 0)
+        {
+            GameObject enemyBase = tank.VisibleEnemyBases.Keys.First();
+            float baseDist = Vector3.Distance(tank.transform.position, enemyBase.transform.position);
+
+            //if outside fire range, get close
+            if (tank.VisibleEnemyBases.Count > 0 && baseDist > 35f)
+            {
+                Debug.Log("I not brave");
+                tank.FollowPathToWorldPoint(enemyBase, 1f, tank.heuristicMode);
+            }
+            //if within fire range, shoot
+            if (baseDist < 35f)
+            {
+                tank.TurretFireAtPoint(tank.VisibleEnemyBases.Keys.First());
+            }
+            //tank.TurretFaceWorldPoint(tank.VisibleEnemyBases.Keys.First());
+
+        }
+
         return null;
     }
 }
