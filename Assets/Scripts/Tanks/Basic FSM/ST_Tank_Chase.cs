@@ -1,25 +1,47 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ST_Tank_Chase : ST_BaseTankState
 {
-    // setting up to enter the state
+    private Transform targetEnemy; // The current target enemy
+
+    // Called when entering the state
     public override Type EnterState()
     {
+        targetEnemy = null;
         return null;
     }
 
-    // anything that needs to be reset or changed once the player leaves the stage
+    // Called when leaving the state
     public override Type LeaveState()
     {
+        targetEnemy = null;
         return null;
     }
 
-    // logic that runs every physics update inside of the controller
-    public override Type StateLogic()
+    // Runs every physics update inside the controller
+public override Type StateLogic()
+{
+    if (tank.VisibleEnemyTanks.Count == 0)
     {
-        return null;
+        // No enemies visible, switch to search state
+        return typeof(ST_Tank_Search);
     }
+
+    // Identify the closest enemy if no target is locked
+    if (targetEnemy == null || !tank.VisibleEnemyTanks.ContainsKey(targetEnemy.gameObject))
+    {
+        GameObject closestEnemyObject = tank.VisibleEnemyTanks
+            .OrderBy(enemy => Vector3.Distance(transform.position, enemy.Key.transform.position))
+            .First().Key;
+
+        targetEnemy = closestEnemyObject.transform; // Set the target enemy's Transform
+    }
+
+    
+    return null;
+}
+
+
 }
