@@ -104,7 +104,7 @@ public class AStar : MonoBehaviour
                 //cheack for obstacles, is it traverable?
                 //Adjacancy Matrix could also be used to add traversability
                 if (Physics.CheckSphere(nodePos, nodeSize / 2, obstacleLayer) 
-                ||  Physics.CheckSphere(nodePos, nodeSize / 2, baseLayer)
+                //||  Physics.CheckSphere(nodePos, nodeSize / 2, baseLayer)
                 )
                 {
                     traversable = false;
