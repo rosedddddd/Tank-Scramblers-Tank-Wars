@@ -61,12 +61,19 @@ public class ST_Controller : MonoBehaviour
 
     public virtual void ControllerStart()
     {
+        if (tank == null)
+        {
+            Debug.LogError("Tank reference is not assigned to ST_Controller.");
+            return;
+        }
         InitializeStates();
 
         if (curState == null)
         {
-            curState = typeof(ST_Tank_Attack);
+            curState = typeof(ST_Tank_Chase);
         }
+
+        
     }
 
     public virtual void InitializeStates()
