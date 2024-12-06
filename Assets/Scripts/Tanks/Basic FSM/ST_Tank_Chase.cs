@@ -11,6 +11,7 @@ public class ST_Tank_Chase : ST_BaseTankState
     {
         targetEnemy = null;
         return null;
+        Debug.Log("in chase mode");
     }
 
     // Called when leaving the state
@@ -37,7 +38,17 @@ public override Type StateLogic()
             .First().Key;
 
         targetEnemy = closestEnemyObject.transform; // Set the target enemy's Transform
+        Debug.Log("finding enemy");
     }
+
+    if (targetEnemy != null)
+        {
+            tank.FollowPathToWorldPoint(targetEnemy.gameObject, 1, tank.heuristicMode);
+
+            // Rotate the turret to face the target enemy
+            tank.TurretFaceWorldPoint(targetEnemy.gameObject);
+            Debug.Log("moving turret");
+        }
 
     
     return null;
