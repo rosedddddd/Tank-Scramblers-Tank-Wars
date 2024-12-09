@@ -70,11 +70,7 @@ public class ST_Controller : MonoBehaviour
 
         if (curState == null)
         {
-<<<<<<< Updated upstream
-            curState = typeof(ST_Tank_Chase);
-=======
             curState = typeof(ST_Tank_Search);
->>>>>>> Stashed changes
         }
 
         
