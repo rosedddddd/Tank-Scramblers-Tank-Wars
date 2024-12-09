@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class ST_BaseTankState : ST_State
 {
-    public ST_Base_Tank tank;
+    public ST_Smart_Tank tank;
 }

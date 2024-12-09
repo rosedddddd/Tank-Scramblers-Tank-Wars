@@ -4,32 +4,27 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ST_Controller : MonoBehaviour
+public class ST_FSM : MonoBehaviour
 {
-    public ST_Base_Tank tank;
+    public ST_Smart_Tank tank;
     public Type curState; //current state
     public Dictionary<Type, ST_BaseTankState> states;
 
-    public void AttemptStateChange(Type newState)
+    public bool AttemptStateChange(Type newState)
     {
-        if (newState == curState || newState == null) return;
+        if (newState == curState || newState == null) return false;
 
 
         //checking if the LeaveState() function returns a different state to imediately jump to
-        Type leavingOverrideType = states[curState].LeaveState();
-
-        if (leavingOverrideType != newState || newState != null)
-        { AttemptStateChange(leavingOverrideType); return; }
+        if (AttemptStateChange(states[curState].LeaveState())) return false;
 
         //checking if the EnterState() function returns a different state to imediately jump to
-        Type enteringOverrideType = states[newState].EnterState();
-
-        if (enteringOverrideType != newState || newState != null)
-        { AttemptStateChange(enteringOverrideType); return; }
+        if (AttemptStateChange(states[newState].EnterState())) return false;
 
         //finaly actually changing the state once no ovverides are detected.
         curState = newState;
 
+        return true;
         // do not place overlaping state conditions inside the EnterState() or LeaveState() function of multiple states
         // it could cause an infinite loop if for example:
         /*
@@ -56,7 +51,9 @@ public class ST_Controller : MonoBehaviour
 
     public virtual void ControllerUpdate()
     {
-        states[curState].StateLogic();
+        AttemptStateChange(states[curState].StateLogic());
+
+        Debug.LogError(states[curState].ToString());
     }
 
     public virtual void ControllerStart()
@@ -71,6 +68,8 @@ public class ST_Controller : MonoBehaviour
 
     public virtual void InitializeStates()
     {
+        Debug.LogError("styart");
+
         states = new Dictionary<Type, ST_BaseTankState>();
 
         states.Add(typeof(ST_Tank_Search), new ST_Tank_Search());

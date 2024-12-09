@@ -7,31 +7,43 @@ using static AStar;
 /// <summary>
 /// Class <c>ST_Base_Tank</c> Copy of Dumb tank without any function definitions.
 /// </summary>
-public class ST_Base_Tank : AITank
+public class ST_Smart_Tank : AITank
 {
     public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     /*!< <c>enemyTanksFound</c> stores all tanks that are visible within the tanks sensor. */
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
     public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     /*!< <c>enemyBasesFound</c> stores all enemybases that are visible within the tanks sensor. */
 
-    public ST_Controller controller; // the tank controller
+    public ST_FSM controller; // the tank controller
     public Transform calcTransform; //a transform used for more complex calculations
     public Transform enemyLastSeen; //last seen spot for enemy tank position
 
+    [Space]
+    [Space]
+    [Space]
 
-    public GameObject enemyTank;        /*!< <c>enemyTank</c> stores a reference to a target enemy tank. 
-                                        * This should be taken from <c>enemyTanksFound</c>, only whilst within the tank sensor. 
-                                        * Reference should be removed and refreshed every update. */
+    public float kitingDistance;
+    public float attackDistance;
 
-    public GameObject consumable;       /*!< <c>consumable</c> stores a reference to a target consumable. 
-                                        * This should be taken from <c>consumablesFound</c>, only whilst within the tank sensor. 
-                                        * Reference should be removed and refreshed every update. */
+    [Space]
+    [Space]
+    [Space]
 
-    public GameObject enemyBase;        /*!< <c>enemyBase</c> stores a reference to a target enemy base. 
-                                         * This should be taken from <c>enemyBasesFound</c>, only whilst within the tank sensor. 
-                                        * Reference should be removed and refreshed every update. */
-
-    float t;    /*!< <c>t</c> stores timer value */
+    
+    public float healthFleeThreshold; // low health, retreat
+    public int ammoFleeThreshold; // low ammo. retreat
+    public float fuelFleeThreshold; // low fuel, retreat
+    public float fuelLastStandThreshold; //low health and low fuel, go all in
     public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
+
+    [HideInInspector]
+    public float lastSeenTimer;
+
+    public bool lowHealth { get { return TankCurrentHealth < healthFleeThreshold; } }
+    public bool lowFuel { get { return TankCurrentFuel < fuelFleeThreshold; } }
+    public bool lowAmmo { get { return TankCurrentHealth < healthFleeThreshold; } }
+
+    public bool lastStand { get { return lowHealth && lowFuel; } }
+
 
     /// <summary>
     ///WARNING, do not use void <c>Start()</c> function, use this <c>AITankStart()</c> function instead if you want to use Start method from Monobehaviour.
@@ -54,7 +66,10 @@ public class ST_Base_Tank : AITank
         if (VisibleEnemyTanks.Count > 0)
         {
             enemyLastSeen.position = VisibleEnemyTanks.Keys.First().transform.position;
+            lastSeenTimer = 0;
         }
+        else lastSeenTimer += Time.deltaTime;
+
         controller.ControllerUpdate();
     }
 

@@ -31,7 +31,7 @@ public class ST_Tank_Search : ST_BaseTankState
         else
         {
             tank.FollowPathToRandomWorldPoint(.3f, tank.heuristicMode);
-            tank.calcTransform.position = transform.position + new Vector3(Mathf.Sin(Time.time * 5), 0, Mathf.Cos(Time.time * 5));
+            tank.calcTransform.position = tank.transform.position + new Vector3(Mathf.Sin(Time.time * 5), 0, Mathf.Cos(Time.time * 5));
             tank.TurretFaceWorldPoint(tank.calcTransform.gameObject);
         }
 

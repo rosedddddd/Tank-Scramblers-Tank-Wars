@@ -1,20 +1,25 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 using UnityEngine;
 
-
-public abstract class ST_State 
+public class ST_Tank_Kiting : ST_BaseTankState
 {
-
     // setting up to enter the state
-    public abstract Type EnterState();
+    public override Type EnterState()
+    {
+        return null;
+    }
 
     // anything that needs to be reset or changed once the player leaves the stage
-    public abstract Type LeaveState();
+    public override Type LeaveState()
+    {
+        return null;
+    }
 
     // logic that runs every physics update inside of the controller
-    public abstract Type StateLogic();
+    public override Type StateLogic()
+    {
+        return null;
+    }
 }
-
-

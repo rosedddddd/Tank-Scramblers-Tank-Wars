@@ -300,9 +300,11 @@ MonoBehaviour:
   controller: {fileID: 8149242142671988081}
   calcTransform: {fileID: 3322394534008834636}
   enemyLastSeen: {fileID: 1450709761607131827}
-  enemyTank: {fileID: 0}
-  consumable: {fileID: 0}
-  enemyBase: {fileID: 0}
+  lastSeenTimer: 0
+  healthFleeThreshold: 20
+  ammoFleeThreshold: 1
+  fuelFleeThreshold: 40
+  fuelLastStandThreshold: 10
   heuristicMode: 0
 --- !u!1 &2413098439540401682
 GameObject:
