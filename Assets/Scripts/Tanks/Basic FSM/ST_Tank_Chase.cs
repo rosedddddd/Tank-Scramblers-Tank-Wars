@@ -10,53 +10,54 @@ public class ST_Tank_Chase : ST_BaseTankState
     public override Type EnterState()
     {
         targetEnemy = null;
-        Debug.Log("in chase mode");
         return null;
-        
+        Debug.Log("in chase mode");
     }
 
     // Called when leaving the state
     public override Type LeaveState()
     {
         targetEnemy = null;
-        Debug.Log("exit chase mode");
         return null;
-        
+        Debug.Log("exit chase mode");
     }
 
     
-// Runs every physics update inside the controller
-float timer;
 
+float timer;
+// Runs every physics update inside the controller
 public override Type StateLogic()
 {
     // Get the dictionary of visible enemy tanks.
     var visibleEnemies = tank.VisibleEnemyTanks;
+    
 
     if (visibleEnemies.Count > 0)
     {
-        timer = 5;
         // Move towards the enemy.
-        tank.enemyLastSeen.position = tank.VisibleEnemyTanks.Keys.First().transform.position;
-        tank.FollowPathToWorldPoint(tank.enemyLastSeen.gameObject, normalizedSpeed: 1.0f);
-        
+        tank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);
 
         
         return typeof(ST_Tank_Chase);
     }
-    else if (timer > 0){
-        timer -= Time.deltaTime;
-            tank.FollowPathToWorldPoint(tank.enemyLastSeen.gameObject, normalizedSpeed: 1.0f);
-            return null;
-        }
-    else
-    {
+
+    if (timer > 0){
+    timer -= Time.deltaTime;
+        tank.FollowPathToWorldPoint(tank.enemyLastSeen.gameObject, normalizedSpeed: 1.0f);
+        return null;
         
-        tank.GenerateNewRandomWorldPoint();
+    }
+
+    if (timer <= 0)
+        {
+            return typeof(ST_Tank_Attack);
+        }
+        
+    tank.GenerateNewRandomWorldPoint();
 
         
-        return typeof(ST_Tank_Search); 
-    }
+    return typeof(ST_Tank_Search); 
+    
 }
 
 
