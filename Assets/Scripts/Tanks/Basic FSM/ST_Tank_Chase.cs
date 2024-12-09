@@ -37,29 +37,14 @@ public override Type StateLogic()
         
         return typeof(ST_Tank_Chase);
     }
-<<<<<<< Updated upstream
     else
     {
-=======
-    
-    if (timer > 0){
-    timer -= Time.deltaTime;
-        tank.FollowPathToWorldPoint(tank.enemyLastSeen.gameObject, normalizedSpeed: 1.0f);
-        return null;
->>>>>>> Stashed changes
         
+        tank.GenerateNewRandomWorldPoint();
+
+        
+        return typeof(ST_Tank_Search); 
     }
-
-    if (timer <= 0)
-        {
-            return typeof(ST_Tank_Attack);
-        }
-        
-    tank.GenerateNewRandomWorldPoint();
-
-        
-    return typeof(ST_Tank_Search); 
-    
 }
 
 
