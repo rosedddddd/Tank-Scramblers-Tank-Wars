@@ -36,7 +36,7 @@ public class ST_Smart_Tank : AITank
     public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
 
     [HideInInspector]
-    public float lastSeenTimer;
+    public float lastSeenTimer = 5000;
 
     public bool lowHealth { get { return TankCurrentHealth < healthFleeThreshold; } }
     public bool lowFuel { get { return TankCurrentFuel < fuelFleeThreshold; } }
@@ -44,13 +44,16 @@ public class ST_Smart_Tank : AITank
 
     public bool lastStand { get { return lowHealth && lowFuel; } }
 
+    public bool takenBackshot = false;
 
+    private float lastFrameHealth;
     /// <summary>
     ///WARNING, do not use void <c>Start()</c> function, use this <c>AITankStart()</c> function instead if you want to use Start method from Monobehaviour.
     ///Use this function to initialise your tank variables etc.
     /// </summary>
     public override void AITankStart()
     {
+        lastSeenTimer = 9999;
         calcTransform.parent = null;
         enemyLastSeen.parent = null;
         controller.ControllerStart();
@@ -70,7 +73,13 @@ public class ST_Smart_Tank : AITank
         }
         else lastSeenTimer += Time.deltaTime;
 
+        
+        
+        takenBackshot = lastFrameHealth > TankCurrentHealth && VisibleEnemyTanks.Count == 0;
+
         controller.ControllerUpdate();
+        
+        lastFrameHealth = TankCurrentHealth;
     }
 
     /// <summary>

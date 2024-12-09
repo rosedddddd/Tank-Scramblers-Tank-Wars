@@ -49,54 +49,60 @@ public class ST_Tank_Attack : ST_BaseTankState
                 tank.TurretFireAtPoint(tank.VisibleEnemyTanks.Keys.First());
             }
             else if (dist < 25F) { t += Time.deltaTime; }
-
+            tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
+            tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
         }
-        tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
-        tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
 
         //if enemy tank out of FOV, switch to search state
         if (tank.VisibleEnemyTanks.Count <= 0 && tank.VisibleEnemyBases.Count <= 0)
         {
-            Debug.Log("switching to search mode");
-            //tank.ST_Tank_Search();
+            //Debug.Log("switching to search mode");
             return typeof(ST_Tank_Search);
         }
 
         //if enemy tank out of firing range, switch to chase state
-        if (tank.VisibleEnemyTanks.Count >= 1 && Vector3.Distance(tank.transform.position, tank.VisibleEnemyTanks.Keys.First().transform.position) > 35f)
+        if (tank.VisibleEnemyTanks.Count >= 1)
         {
-            Debug.Log("switching to Chase state");
-            //tank.ST_Tank_Chase();
-            return typeof(ST_Tank_Chase);
-
-        }
-        //if enemy within fire range, switch to attack state
-        else if (tank.VisibleEnemyTanks.Count >= 1 && Vector3.Distance(tank.transform.position, tank.VisibleEnemyTanks.Keys.First().transform.position) <= 35f)
-        {
-            Debug.Log("Switching to Attack State");
-            //tank.ST_Tank_Attack();
-            return typeof(ST_Tank_Attack);
+            float enemmyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.transform.position);
+            if (enemmyDist > 35f)
+            {
+                //Debug.Log("switching to Chase state");
+                return typeof(ST_Tank_Chase);
+            }
+            else
+            {
+                //Debug.Log("Switching to Attack State");
+                return typeof(ST_Tank_Attack);
+            }
         }
 
         //if there are no tanks in FOV and at least 1 enemy base in FOV
-        if (tank.VisibleEnemyTanks.Count <= 0 && tank.VisibleEnemyBases.Count > 0)
+        if (tank.VisibleEnemyBases.Count > 0)
         {
             GameObject enemyBase = tank.VisibleEnemyBases.Keys.First();
             float baseDist = Vector3.Distance(tank.transform.position, enemyBase.transform.position);
 
-            //if outside fire range, get close
-            if (tank.VisibleEnemyBases.Count > 0 && baseDist > 35f)
-            {
-                Debug.Log("getting close to enemy base");
-                tank.FollowPathToWorldPoint(enemyBase, 1f, tank.heuristicMode);
-            }
+            
             //if within fire range, shoot
-            else if (baseDist < 35f)
-            {
-                Debug.Log("Firing at enemy base");
-                tank.TurretFireAtPoint(tank.VisibleEnemyBases.Keys.First());
+            float closestDistance = 999f;
+            GameObject closestBase = null;
+
+            foreach (GameObject item in tank.VisibleEnemyBases.Keys) { 
+
+                if (Vector3.Distance(item.transform.position, tank.transform.position) < closestDistance)
+                {
+                    closestDistance = Vector3.Distance(item.transform.position, tank.transform.position);
+                    closestBase = item;
+                    
+                }
             }
-            //tank.TurretFaceWorldPoint(tank.VisibleEnemyBases.Keys.First());
+
+            if (closestBase) {
+                tank.TurretFireAtPoint(closestBase);
+                tank.FollowPathToWorldPoint(closestBase, 1f, tank.heuristicMode);
+
+            }
+            
 
         }
 

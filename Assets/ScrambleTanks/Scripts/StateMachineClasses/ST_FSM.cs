@@ -53,7 +53,6 @@ public class ST_FSM : MonoBehaviour
     {
         AttemptStateChange(states[curState].StateLogic());
 
-        Debug.LogError(states[curState].ToString());
     }
 
     public virtual void ControllerStart()
@@ -68,7 +67,6 @@ public class ST_FSM : MonoBehaviour
 
     public virtual void InitializeStates()
     {
-        Debug.LogError("styart");
 
         states = new Dictionary<Type, ST_BaseTankState>();
 
