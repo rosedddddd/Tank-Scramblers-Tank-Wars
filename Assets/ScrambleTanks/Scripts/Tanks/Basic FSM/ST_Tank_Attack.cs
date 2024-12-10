@@ -7,6 +7,7 @@ using UnityEngine;
 public class ST_Tank_Attack : ST_BaseTankState
 {
     public float t;
+    public bool circlingClockwise;
 
     // setting up to enter the state
     public override Type EnterState()
@@ -29,6 +30,25 @@ public class ST_Tank_Attack : ST_BaseTankState
             Vector3 normalized = (tank.transform.position - tank.VisibleEnemyTanks.Keys.First().transform.position).normalized;
             float circlingAngle = 90f;
             float circlingAngleBeforeReadyingUpToShoot= 40f;
+
+
+            //use rays to check if there's an obstacle
+            RaycastHit hit;
+            if (
+                Physics.Raycast(
+                    new Ray(tank.transform.position, tank.calcTransform.position - tank.transform.position),
+                    out hit,
+                    Vector3.Distance(tank.transform.position, tank.calcTransform.position),
+                    tank.raycastLayers
+                    )
+                )
+            {
+                circlingClockwise = !circlingClockwise;
+                Debug.DrawLine(tank.transform.position, hit.point, Color.red, 10);
+            }
+
+            circlingAngle *= circlingClockwise ? -1 : 1;
+            circlingAngleBeforeReadyingUpToShoot *= circlingClockwise ? -1 : 1;
 
             if (t > 5) //at 5 seconds round out
             {
