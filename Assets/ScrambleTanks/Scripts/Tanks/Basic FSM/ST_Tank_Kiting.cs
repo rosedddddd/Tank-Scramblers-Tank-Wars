@@ -61,6 +61,7 @@ public class ST_Tank_Kiting : ST_BaseTankState
             tank.GeneratePathToWorldPoint(tank.calcTransform.gameObject);
             tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
 
+            tank.hasKited = true;
             if (tank.TankCurrentHealth <= 75) { return typeof(ST_Tank_Retreat); }
             if(t >= 15) { return typeof(ST_Tank_Attack);}
 

@@ -48,6 +48,8 @@ public class ST_Smart_Tank : AITank
 
     public bool takenBackshot = false;
 
+    public bool hasKited = false;
+
     private float lastFrameHealth;
     /// <summary>
     ///WARNING, do not use void <c>Start()</c> function, use this <c>AITankStart()</c> function instead if you want to use Start method from Monobehaviour.
