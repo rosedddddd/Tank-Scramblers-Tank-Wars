@@ -61,7 +61,7 @@ public class ST_FSM : MonoBehaviour
 
         if (curState == null)
         {
-            curState = typeof(ST_Tank_Attack);
+            curState = typeof(ST_Tank_Kiting);
         }
     }
 
@@ -74,6 +74,7 @@ public class ST_FSM : MonoBehaviour
         states.Add(typeof(ST_Tank_Chase), new ST_Tank_Chase());
         states.Add(typeof(ST_Tank_Attack), new ST_Tank_Attack());
         states.Add(typeof(ST_Tank_Retreat), new ST_Tank_Retreat());
+        states.Add(typeof(ST_Tank_Kiting), new ST_Tank_Kiting());
 
         //linking the states to the controller
         ST_BaseTankState[] stateReferences = states.Values.ToArray();
