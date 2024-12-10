@@ -23,32 +23,31 @@ public class ST_Tank_Attack : ST_BaseTankState
     // logic that runs every physics update inside of the controller
     public override Type StateLogic()
     {
-        if (tank.VisibleEnemyTanks.Count > 0)
+        if (tank.VisibleEnemyTanks.Count > 0) //when tanks in sight
         {
             float dist = Vector3.Distance(tank.transform.position, tank.VisibleEnemyTanks.Keys.First().transform.position);
             Vector3 normalized = (tank.transform.position - tank.VisibleEnemyTanks.Keys.First().transform.position).normalized;
             float circlingAngle = 90f;
             float circlingAngleBeforeReadyingUpToShoot= 40f;
 
-            //Debug.Log(t);
-            if (t > 5)
+            if (t > 5) //at 5 seconds round out
             {
                 normalized = Quaternion.AngleAxis(circlingAngleBeforeReadyingUpToShoot, Vector3.up) * normalized;
                 tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * 20;
             }
-            else
+            else // any other time close in
             {
                 normalized = Quaternion.AngleAxis(circlingAngle, Vector3.up) * normalized;
                 tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * 5;
             }
 
-            if (t > 7)
+            if (t > 7) //when at 7 secs restart t and attack
             {
                 t = 0;
                 tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
                 tank.TurretFireAtPoint(tank.VisibleEnemyTanks.Keys.First());
             }
-            else if (dist < 25F) { t += Time.deltaTime; }
+            else if (dist < 25F) { t += Time.deltaTime; } //keep counting time if within distance
             tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
             tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
         }
@@ -56,7 +55,6 @@ public class ST_Tank_Attack : ST_BaseTankState
         //if enemy tank out of FOV, switch to search state
         if (tank.VisibleEnemyTanks.Count <= 0 && tank.VisibleEnemyBases.Count <= 0)
         {
-            //Debug.Log("switching to search mode");
             return typeof(ST_Tank_Search);
         }
 
@@ -64,29 +62,22 @@ public class ST_Tank_Attack : ST_BaseTankState
         if (tank.VisibleEnemyTanks.Count >= 1)
         {
             float enemmyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.transform.position);
-            if (enemmyDist > 35f)
-            {
-                //Debug.Log("switching to Chase state");
-                return typeof(ST_Tank_Chase);
-            }
-            else
-            {
-                //Debug.Log("Switching to Attack State");
-                return typeof(ST_Tank_Attack);
-            }
+            
+            if (enemmyDist > 35f) {return typeof(ST_Tank_Chase); } //if too far but still in sight away switch to chase
+            
+            else { return typeof(ST_Tank_Attack); } //else keep attacking
         }
 
         //if there are no tanks in FOV and at least 1 enemy base in FOV
-        if (tank.VisibleEnemyBases.Count > 0)
+        if (tank.VisibleEnemyBases.Count > 0 && tank.VisibleEnemyTanks.Count <= 0)
         {
             GameObject enemyBase = tank.VisibleEnemyBases.Keys.First();
             float baseDist = Vector3.Distance(tank.transform.position, enemyBase.transform.position);
 
-            
-            //if within fire range, shoot
             float closestDistance = 999f;
             GameObject closestBase = null;
 
+            //chose closest base
             foreach (GameObject item in tank.VisibleEnemyBases.Keys) { 
 
                 if (Vector3.Distance(item.transform.position, tank.transform.position) < closestDistance)
@@ -96,16 +87,13 @@ public class ST_Tank_Attack : ST_BaseTankState
                     
                 }
             }
-
+            //attack closest base
             if (closestBase) {
                 tank.TurretFireAtPoint(closestBase);
                 tank.FollowPathToWorldPoint(closestBase, 1f, tank.heuristicMode);
 
-            }
-            
-
+            } 
         }
-
         return null;
     }
 }
