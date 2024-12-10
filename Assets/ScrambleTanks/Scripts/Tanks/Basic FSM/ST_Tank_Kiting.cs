@@ -19,29 +19,32 @@ public class ST_Tank_Kiting : ST_BaseTankState
     // anything that needs to be reset or changed once the player leaves the stage
     public override Type LeaveState()
     {
+        tank.hasKited = true;
         return null;
     }
 
     // logic that runs every physics update inside of the controller
     public override Type StateLogic()
     {
-        Debug.Log("currently in Kiting mode");
+        //if health dropped too much, retreat
+        if (tank.TankCurrentHealth <= 75) { return typeof(ST_Tank_Retreat); }
+        //time ran out, retreat
+        if(t >= 15) { return typeof(ST_Tank_Attack);}
 
-        
 
-        if (tank.lastSeenTimer < 15)
+        if (tank.lastSeenTimer < 15) //enemy tank seen
         {
-            tank.kitingDistance = 20f;
-            float dist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.position);
-            Vector3 normalized = (tank.transform.position - tank.enemyLastSeen.position).normalized;
-            //float cirAngle = 90f;
-            float cirAngleClose = 40f;
-            cirAngleClose *= circlingClockwise ? -1 : 1;
-            normalized = Quaternion.AngleAxis(cirAngleClose, Vector3.up) * normalized;
-            tank.calcTransform.position = tank.enemyLastSeen.position + normalized * tank.kitingDistance;
+            tank.kitingDistance = 20f; //circle distance
+            float dist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.position); //distance between tanks
+            Vector3 normalized = (tank.transform.position - tank.enemyLastSeen.position).normalized; //normalized position
+            float cirAngleClose = 40f; //circleling angle
+            cirAngleClose *= circlingClockwise ? -1 : 1; //chekc if going clock/counterclock wise
+            normalized = Quaternion.AngleAxis(cirAngleClose, Vector3.up) * normalized; //normalized quaternion
+            tank.calcTransform.position = tank.enemyLastSeen.position + normalized * tank.kitingDistance; //move tank to said position
 
+            //use rays to check if there's an obstacle
             RaycastHit hit;
-            if (
+            if ( 
                 Physics.Raycast(
                     new Ray(tank.transform.position, tank.calcTransform.position - tank.transform.position),
                     out hit,
@@ -57,15 +60,11 @@ public class ST_Tank_Kiting : ST_BaseTankState
             {
                 Debug.DrawLine(tank.transform.position, tank.transform.position + tank.calcTransform.position - tank.transform.position);
             }
-
+            //generate new point to follow if can't traverse
             tank.GeneratePathToWorldPoint(tank.calcTransform.gameObject);
             tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
 
-            tank.hasKited = true;
-            if (tank.TankCurrentHealth <= 75) { return typeof(ST_Tank_Retreat); }
-            if(t >= 15) { return typeof(ST_Tank_Attack);}
-
-            if (dist < 25F) { t += Time.deltaTime; }
+            if (dist < 25F) { t += Time.deltaTime; } //while tank is still within distance keep adding time
             
             tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
         }
