@@ -17,6 +17,8 @@ public class ST_Smart_Tank : AITank
     public Transform calcTransform; //a transform used for more complex calculations
     public Transform enemyLastSeen; //last seen spot for enemy tank position
 
+    public LayerMask raycastLayers;
+
     [Space]
     [Space]
     [Space]
