@@ -37,8 +37,8 @@ public class ST_Tank_Kiting : ST_BaseTankState
             tank.kitingDistance = 20f; //circle distance
             float dist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.position); //distance between tanks
             Vector3 normalized = (tank.transform.position - tank.enemyLastSeen.position).normalized; //normalized position
-            float cirAngleClose = 40f; //circleling angle
-            cirAngleClose *= circlingClockwise ? -1 : 1; //chekc if going clock/counterclock wise
+            float cirAngleClose = 40f; //circling angle
+            cirAngleClose *= circlingClockwise ? -1 : 1; //check if going clock/counterclock wise
             normalized = Quaternion.AngleAxis(cirAngleClose, Vector3.up) * normalized; //normalized quaternion
             tank.calcTransform.position = tank.enemyLastSeen.position + normalized * tank.kitingDistance; //move tank to said position
 
