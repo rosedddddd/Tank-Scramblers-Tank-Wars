@@ -30,34 +30,27 @@ public override Type StateLogic()
 {
     // Get the dictionary of visible enemy tanks.
     var visibleEnemies = tank.VisibleEnemyTanks;
+    float enemyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.transform.position);
     
 
-    if (visibleEnemies.Count > 0)
+    if (visibleEnemies.Count > 0 && enemyDist > 34)
     {
         // Move towards the enemy.
-        tank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);
+        tank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible enemy
+        tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);//pointing turret at enemy
+        timer -= Time.deltaTime;
+        Debug.Log("chasing");
+        return typeof(ST_Tank_Chase);//stay in chase
 
-        
-        return typeof(ST_Tank_Chase);
+
     }
-
-    if (timer > 0){
-    timer -= Time.deltaTime;
-        tank.FollowPathToWorldPoint(tank.enemyLastSeen.gameObject, normalizedSpeed: 1.0f);
-        return null;
-        
+    else
+    {
+        Debug.Log("close enough switching to attack");
+        return typeof(ST_Tank_Attack);//when timer runs out tank attacks
+            
     }
-
-    if (timer <= 0)
-        {
-            return typeof(ST_Tank_Attack);
-        }
-        
-    tank.GenerateNewRandomWorldPoint();
-
-        
-    return typeof(ST_Tank_Search); 
-    
+       
 }
 
 
