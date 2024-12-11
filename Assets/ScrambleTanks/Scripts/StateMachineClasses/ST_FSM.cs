@@ -61,7 +61,7 @@ public class ST_FSM : MonoBehaviour
 
         if (curState == null)
         {
-            curState = typeof(ST_Tank_Attack);
+            curState = typeof(ST_Tank_Search);
         }
     }
 

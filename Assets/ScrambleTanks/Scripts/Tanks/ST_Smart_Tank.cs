@@ -15,16 +15,17 @@ public class ST_Smart_Tank : AITank
 
     public ST_FSM controller; // the tank controller
     public Transform calcTransform; //a transform used for more complex calculations
-    public Transform enemyLastSeen; //last seen spot for enemy tank position
+    public Transform enemyLastSeen; //last seen spot of the enemmy tank. updated inside of AITankUpdate
 
-    public LayerMask raycastLayers;
+    public LayerMask raycastLayers; // layermask used to detect obstacles in the way of the tank's pathfinding via raycast
 
     [Space]
     [Space]
     [Space]
 
-    public float kitingDistance;
-    public float attackDistance;
+    public float kitingDistance; // distance the kiting state will 
+    public float criclingDistance; // distance the tank circles while attacking
+    public float attackDistance; // distance the tank tries to go to before shooting in the attack state
 
     [Space]
     [Space]
@@ -38,19 +39,22 @@ public class ST_Smart_Tank : AITank
     public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
 
     [HideInInspector]
-    public float lastSeenTimer = 5000;
+    public float lastSeenTimer = 5000; // the time since the enemmy tank was last seen
 
+    // a number of self explanitory getters used to simplify state conditional checks
     public bool lowHealth { get { return TankCurrentHealth < healthFleeThreshold; } }
     public bool lowFuel { get { return TankCurrentFuel < fuelFleeThreshold; } }
     public bool lowAmmo { get { return TankCurrentHealth < healthFleeThreshold; } }
-
     public bool lastStand { get { return lowHealth && lowFuel; } }
 
-    public bool takenBackshot = false;
+    public bool attacked = false;
+    public bool takenBackshot = false; // if the tank has been attacked from behind
 
-    public bool hasKited = false;
+    public bool hasKited = false; // if the tank has entered the kiting state before.
+                                  // the kiting state should only happen when first seeing the enemmy to waste their ammo
 
-    private float lastFrameHealth;
+    float lastFrameHealth; // used to check if the tank has taken damage inside the AITankUpdate function
+    
     /// <summary>
     ///WARNING, do not use void <c>Start()</c> function, use this <c>AITankStart()</c> function instead if you want to use Start method from Monobehaviour.
     ///Use this function to initialise your tank variables etc.
@@ -77,9 +81,9 @@ public class ST_Smart_Tank : AITank
         }
         else lastSeenTimer += Time.deltaTime;
 
-        
-        
-        takenBackshot = lastFrameHealth > TankCurrentHealth && VisibleEnemyTanks.Count == 0;
+
+        attacked = lastFrameHealth > TankCurrentHealth;
+        takenBackshot = attacked && VisibleEnemyTanks.Count == 0;
 
         controller.ControllerUpdate();
         
