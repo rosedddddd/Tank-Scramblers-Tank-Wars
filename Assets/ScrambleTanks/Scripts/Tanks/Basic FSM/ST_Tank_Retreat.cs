@@ -11,6 +11,7 @@ public class ST_Tank_Retreat : ST_BaseTankState
     // setting up to enter the state
     public override Type EnterState()
     {
+        retreatTime = 0f;  // Reset retreatTime when entering the retreat state
         return null;
     }
 
@@ -48,7 +49,7 @@ public class ST_Tank_Retreat : ST_BaseTankState
         if (!tank.lowHealth && !tank.lowAmmo && !tank.lowFuel)
         {
             Debug.Log("Good Health! Back to search");
-            //return typeof(ST_Tank_Search);
+            return typeof(ST_Tank_Search);
         }
         else if(retreatTime > 20f) { Debug.Log("time ran out"); return typeof(ST_Tank_Search); }
 
