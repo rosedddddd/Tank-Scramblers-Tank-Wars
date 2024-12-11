@@ -72,6 +72,9 @@ public class ST_Tank_Attack : ST_BaseTankState
             tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
         }
 
+        //if low health/ammo/fuel, retreat
+        if (tank.lowHealth || tank.lowAmmo || tank.lowFuel) return typeof(ST_Tank_Retreat);
+
         //if enemy tank out of FOV, switch to search state
         if (tank.VisibleEnemyTanks.Count <= 0 && tank.VisibleEnemyBases.Count <= 0)
         {
@@ -91,9 +94,6 @@ public class ST_Tank_Attack : ST_BaseTankState
         //if there are no tanks in FOV and at least 1 enemy base in FOV
         if (tank.VisibleEnemyBases.Count > 0 && tank.VisibleEnemyTanks.Count <= 0)
         {
-            GameObject enemyBase = tank.VisibleEnemyBases.Keys.First();
-            float baseDist = Vector3.Distance(tank.transform.position, enemyBase.transform.position);
-
             float closestDistance = 999f;
             GameObject closestBase = null;
 
@@ -107,12 +107,20 @@ public class ST_Tank_Attack : ST_BaseTankState
                     
                 }
             }
-            //attack closest base
-            if (closestBase) {
-                tank.TurretFireAtPoint(closestBase);
-                tank.FollowPathToWorldPoint(closestBase, 1f, tank.heuristicMode);
 
-            } 
+            //get distance between tank and closest base
+            float baseDist = Vector3.Distance(tank.transform.position, closestBase.transform.position);
+
+            //if outside fire range, get close
+            if (baseDist > 35f)
+            {
+                tank.FollowPathToWorldPoint(closestBase, 1f, tank.heuristicMode); 
+            }
+            //if within fire range, shoot
+            else if (baseDist < 35f)
+            {
+                tank.TurretFireAtPoint(closestBase);
+            }
         }
         return null;
     }
