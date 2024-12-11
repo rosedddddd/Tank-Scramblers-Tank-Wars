@@ -30,9 +30,9 @@ public class ST_Tank_Chase : ST_BaseTankState
         float enemyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.transform.position);//looking at distance before switching to attack
         
 
-        if (visibleEnemies.Count > 0 && enemyDist > 35 || tank.VisibleConsumables.Count > 0)
+        if ((visibleEnemies.Count > 0 && enemyDist > 35f ) || tank.VisibleConsumables.Count > 0)
         {
-            if (enemyDist < 35)
+            if (enemyDist > 35f)
             {
                 tank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible enemy
                 tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);//pointing turret at enemy

@@ -23,6 +23,8 @@ public class ST_FSM : MonoBehaviour
 
         //finaly actually changing the state once no ovverides are detected.
         curState = newState;
+        Debug.LogError(curState);
+
 
         return true;
         // do not place overlaping state conditions inside the EnterState() or LeaveState() function of multiple states
@@ -62,6 +64,7 @@ public class ST_FSM : MonoBehaviour
         if (curState == null)
         {
             curState = typeof(ST_Tank_Search);
+            
         }
     }
 
