@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +65,7 @@ public class ST_Smart_Tank : AITank
         lastSeenTimer = 9999;
         calcTransform.parent = null;
         enemyLastSeen.parent = null;
+        InitializeStates();
         controller.ControllerStart();
     }
 
@@ -99,6 +101,27 @@ public class ST_Smart_Tank : AITank
     }
 
 
+
+    public virtual void InitializeStates()
+    {
+
+        controller.states = new Dictionary<Type, ST_BaseTankState>();
+
+        controller.states.Add(typeof(ST_Tank_Search), new ST_Tank_Search());
+        controller.states.Add(typeof(ST_Tank_Chase), new ST_Tank_Chase());
+        controller.states.Add(typeof(ST_Tank_Attack), new ST_Tank_Attack());
+        controller.states.Add(typeof(ST_Tank_Retreat), new ST_Tank_Retreat());
+        controller.states.Add(typeof(ST_Tank_Kiting), new ST_Tank_Kiting());
+
+        //linking the states to the controller
+        ST_BaseTankState[] stateReferences = controller.states.Values.ToArray();
+        foreach (var stateReference in stateReferences)
+        {
+            stateReference.tank = controller.tank;
+        }
+
+        controller.AttemptStateChange(typeof(ST_Tank_Search)); // initial state of the tank
+    }
 
     /*******************************************************************************************************       
     Below are a set of functions you can use. These reference the functions in the AITank Abstract class

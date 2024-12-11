@@ -59,31 +59,10 @@ public class ST_FSM : MonoBehaviour
 
     public virtual void ControllerStart()
     {
-        InitializeStates();
-
         if (curState == null)
         {
-            curState = typeof(ST_Tank_Search);
+            curState = states.Keys.First();
             
-        }
-    }
-
-    public virtual void InitializeStates()
-    {
-
-        states = new Dictionary<Type, ST_BaseTankState>();
-
-        states.Add(typeof(ST_Tank_Search), new ST_Tank_Search());
-        states.Add(typeof(ST_Tank_Chase), new ST_Tank_Chase());
-        states.Add(typeof(ST_Tank_Attack), new ST_Tank_Attack());
-        states.Add(typeof(ST_Tank_Retreat), new ST_Tank_Retreat());
-        states.Add(typeof(ST_Tank_Kiting), new ST_Tank_Kiting());
-
-        //linking the states to the controller
-        ST_BaseTankState[] stateReferences = states.Values.ToArray();
-        foreach (var stateReference in stateReferences)
-        {
-            stateReference.tank = this.tank;
         }
     }
 
