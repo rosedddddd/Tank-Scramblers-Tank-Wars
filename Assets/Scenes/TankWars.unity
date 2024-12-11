@@ -44102,7 +44102,7 @@ Transform:
   m_GameObject: {fileID: 1503203547}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 67.3, y: 2.15, z: -18.8}
+  m_LocalPosition: {x: -63.4, y: 2.15, z: -57.6}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -61796,6 +61796,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3329
   kitingDistance: 0
+  criclingDistance: 0
   attackDistance: 0
   healthFleeThreshold: 20
   ammoFleeThreshold: 1
@@ -61803,7 +61804,9 @@ MonoBehaviour:
   fuelLastStandThreshold: 10
   heuristicMode: 0
   lastSeenTimer: 0
+  attacked: 0
   takenBackshot: 0
+  hasKited: 0
 --- !u!23 &119260625573755461
 MeshRenderer:
   m_ObjectHideFlags: 0
