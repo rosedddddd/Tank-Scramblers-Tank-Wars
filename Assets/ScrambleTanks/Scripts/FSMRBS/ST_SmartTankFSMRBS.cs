@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using static AStar;
 
@@ -15,6 +16,11 @@ public class ST_SmartTankFSMRBS : AITank
     public Dictionary<GameObject, float> enemyTanksFound = new Dictionary<GameObject, float>();     /*!< <c>enemyTanksFound</c> stores all tanks that are visible within the tanks sensor. */
     public Dictionary<GameObject, float> consumablesFound = new Dictionary<GameObject, float>();    /*!< <c>consumablesFound</c> stores all consumables that are visible within the tanks sensor. */
     public Dictionary<GameObject, float> enemyBasesFound = new Dictionary<GameObject, float>();     /*!< <c>enemyBasesFound</c> stores all enemybases that are visible within the tanks sensor. */
+
+    public Transform calcTransform; //a transform used for more complex calculations
+    public Transform enemyLastSeen; //last seen spot of the enemmy tank. updated inside of AITankUpdate
+
+    public LayerMask raycastLayers; // layermask used to detect obstacles in the way of the tank's pathfinding via raycast
 
     public GameObject enemyTank;        /*!< <c>enemyTank</c> stores a reference to a target enemy tank. 
                                         * This should be taken from <c>enemyTanksFound</c>, only whilst within the tank sensor. 
@@ -35,6 +41,15 @@ public class ST_SmartTankFSMRBS : AITank
     public bool lowAmmo;
     public bool lowFuel;
 
+    public float lastSeenTimer = 5000; // the time since the enemmy tank was last seen
+    public bool attacked = false;
+    public bool takenBackshot = false; // if the tank has been attacked from behind
+
+    public bool hasKited = false; // if the tank has entered the kiting state before.
+                                  // the kiting state should only happen when first seeing the enemmy to waste their ammo
+
+    float lastFrameHealth; // used to check if the tank has taken damage inside the AITankUpdate function
+
     public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
 
     /// <summary>
@@ -43,10 +58,13 @@ public class ST_SmartTankFSMRBS : AITank
     /// </summary>
     public override void AITankStart()
     {
-        InitialiseFacts();
         InitialiseRules();
+        InitialiseFacts();
         InitializeStateMachine();
-
+        lastSeenTimer = 9999;
+        calcTransform.parent = null;
+        enemyLastSeen.parent = null;
+        //controller.ControllerStart();
     }
 
     /// <summary>
@@ -56,11 +74,20 @@ public class ST_SmartTankFSMRBS : AITank
     /// </summary>
     public override void AITankUpdate()
     {
-        //Update all currently visible.
-        enemyTanksFound = VisibleEnemyTanks;
-        consumablesFound = VisibleConsumables;
-        enemyBasesFound = VisibleEnemyBases;
+        if (VisibleEnemyTanks.Count > 0)
+        {
+            enemyLastSeen.position = VisibleEnemyTanks.Keys.First().transform.position;
+            lastSeenTimer = 0;
+        }
+        else lastSeenTimer += Time.deltaTime;
 
+
+        attacked = lastFrameHealth > TankCurrentHealth;
+        takenBackshot = attacked && VisibleEnemyTanks.Count == 0;
+
+        //controller.ControllerUpdate();
+
+        lastFrameHealth = TankCurrentHealth;
     }
 
     /// <summary>
