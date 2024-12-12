@@ -11,7 +11,6 @@ public class ST_Tank_Chase : ST_BaseTankState
     {
         targetEnemy = null;
         return null;
-        Debug.Log("in chase mode");
     }
 
     // Called when leaving the state
@@ -19,7 +18,6 @@ public class ST_Tank_Chase : ST_BaseTankState
     {
         targetEnemy = null;
         return null;
-        Debug.Log("exit chase mode");
     }
         
     // Runs every physics update inside the controller
@@ -27,11 +25,14 @@ public class ST_Tank_Chase : ST_BaseTankState
     {
         // Get the dictionary of visible enemy tanks.
         var visibleEnemies = tank.VisibleEnemyTanks;
-        float enemyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.transform.position);//looking at distance before switching to attack
+        //creating a variable for enemy distance to use in the if statements
+        float enemyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.transform.position);
         
-
+        //if the tank can see an enemy and its over 35 away or it can see a consumable
         if ((visibleEnemies.Count > 0 && enemyDist > 35f ) || tank.VisibleConsumables.Count > 0)
-        {
+        {   
+
+            //get closer to the enemy if its 35 away
             if (enemyDist > 35f)
             {
                 tank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible enemy
@@ -40,6 +41,7 @@ public class ST_Tank_Chase : ST_BaseTankState
                 return typeof(ST_Tank_Chase);//stay in chase
 
             }
+            //if the tank sees a consumable go fast towards them to get consumable advantage then continue to chase enemy
             else if (tank.VisibleConsumables.Count > 0)
             {
                 tank.FollowPathToWorldPoint(tank.VisibleConsumables.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible consumable prioritising
@@ -51,6 +53,7 @@ public class ST_Tank_Chase : ST_BaseTankState
         }
         else
         {
+            //if none of the if statements aare true switch to attack it can deal with needing to go to search
             Debug.Log("close enough switching to attack");
             return typeof(ST_Tank_Attack);//when timer runs out tank attacks
                 
