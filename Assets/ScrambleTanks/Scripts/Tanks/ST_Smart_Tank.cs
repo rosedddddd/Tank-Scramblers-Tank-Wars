@@ -66,7 +66,6 @@ public class ST_Smart_Tank : AITank
         calcTransform.parent = null;
         enemyLastSeen.parent = null;
         InitializeStates();
-        controller.ControllerStart();
         
     }
 
@@ -122,6 +121,7 @@ public class ST_Smart_Tank : AITank
         {
             stateReference.tank = controller.tank;
         }
+        controller.ControllerStart();
 
         //controller.AttemptStateChange(typeof(ST_Tank_Search)); // initial state of the tank
     }
