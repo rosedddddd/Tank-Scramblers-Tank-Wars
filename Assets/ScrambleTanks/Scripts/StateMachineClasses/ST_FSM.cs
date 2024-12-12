@@ -59,6 +59,7 @@ public class ST_FSM : MonoBehaviour
 
     public virtual void ControllerStart()
     {
+        Debug.Log(states.Count);
         if (curState == null)
         {
             curState = states.Keys.First();

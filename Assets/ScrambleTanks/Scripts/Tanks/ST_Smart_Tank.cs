@@ -67,6 +67,7 @@ public class ST_Smart_Tank : AITank
         enemyLastSeen.parent = null;
         InitializeStates();
         controller.ControllerStart();
+        
     }
 
     /// <summary>
@@ -112,15 +113,17 @@ public class ST_Smart_Tank : AITank
         controller.states.Add(typeof(ST_Tank_Attack), new ST_Tank_Attack());
         controller.states.Add(typeof(ST_Tank_Retreat), new ST_Tank_Retreat());
         controller.states.Add(typeof(ST_Tank_Kiting), new ST_Tank_Kiting());
+        Debug.Log(controller.states.Count);
 
         //linking the states to the controller
         ST_BaseTankState[] stateReferences = controller.states.Values.ToArray();
+        Debug.Log(stateReferences.Length);
         foreach (var stateReference in stateReferences)
         {
             stateReference.tank = controller.tank;
         }
 
-        controller.AttemptStateChange(typeof(ST_Tank_Search)); // initial state of the tank
+        //controller.AttemptStateChange(typeof(ST_Tank_Search)); // initial state of the tank
     }
 
     /*******************************************************************************************************       
