@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ST_Kiting_FSMRBS : ST_BaseTankState
+public class ST_Kiting_FSMRBS : ST_Base_FSMRBS
 {
     private ST_SmartTankFSMRBS smartTank;
 
@@ -15,14 +15,14 @@ public class ST_Kiting_FSMRBS : ST_BaseTankState
     // setting up to enter the state
     public override Type EnterState()
     {
-        smartTank.stats["kitingState"] = true;
+        smartTank.stats["kitingState_FSMRBS"] = true;
         return null;
     }
 
     // anything that needs to be reset or changed once the player leaves the stage
     public override Type LeaveState()
     {
-        smartTank.stats["kitingState"] = false;
+        smartTank.stats["kitingState_FSMRBS"] = false;
         return null;
     }
 

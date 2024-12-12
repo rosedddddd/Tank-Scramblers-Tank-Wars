@@ -31,8 +31,13 @@ public class ST_StateMachine_FSMRBS : MonoBehaviour
     {
         if (CurrentState == null)
         {
-            CurrentState = states.Values.First();
-            CurrentState.EnterState();
+            //Debug.Log(states.Values.First());
+            if (states.Values.First() != null)
+            {
+                CurrentState = states.Values.First();
+                CurrentState.EnterState();
+            }
+            
         }
         else
         {

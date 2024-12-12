@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
@@ -44,6 +45,7 @@ public class ST_SmartTankFSMRBS : AITank
     {
         InitialiseFacts();
         InitialiseRules();
+        InitializeStateMachine();
 
     }
 
@@ -210,15 +212,53 @@ public class ST_SmartTankFSMRBS : AITank
         stats.Add("searchState_FSMRBS", false);
 
         stats.Add("targetSpotted", false);
-        stats.Add("searchState", false);
-        stats.Add("", false);
+        stats.Add("targetReached", false);
     }
 
     void InitialiseRules()
     {
-        rules.AddRule(new ST_Rule("targetSpotted", "searchState_FSMRBS", typeof(ST_Search_FSMRBS), ST_Rule.Predicate.nAnd));
+        //if not seen and not in search, Search
+        rules.AddRule(new ST_Rule("enemytSpotted", "searchState_FSMRBS", typeof(ST_Search_FSMRBS), ST_Rule.Predicate.nAnd));
+        //if target seen but not reachable, Chase
+        rules.AddRule(new ST_Rule("enemySpotted", "searchState_FSMRBS", typeof(ST_Chase_FSMRBS), ST_Rule.Predicate.And));
+        //if target reachable and chasing
+        rules.AddRule(new ST_Rule("targetReachable", "chaseState_FSMRBS", typeof(ST_Attack_FSMRBS), ST_Rule.Predicate.And));
+        //if low health, low fuel or low ammo, flee
+        rules.AddRule(new ST_Rule("lowHealth_FSMRBS", "lowAmmo_FSMRBS","lowFuel_FSMRBS", typeof(ST_Retreat_FSMRBS), ST_Rule.Predicate.Or));
+
     }
 
+    //Initialize FSM machine States
+    void InitializeStateMachine()
+    {
+        Dictionary<Type, ST_Base_FSMRBS> states = new Dictionary<Type, ST_Base_FSMRBS>();
+
+        states.Add(typeof(ST_Attack_FSMRBS), new ST_Attack_FSMRBS(this));
+        states.Add(typeof(ST_Chase_FSMRBS), new ST_Chase_FSMRBS(this));
+        states.Add(typeof(ST_Kiting_FSMRBS), new ST_Kiting_FSMRBS(this));
+        states.Add(typeof(ST_Retreat_FSMRBS), new ST_Retreat_FSMRBS(this));
+        states.Add(typeof(ST_Search_FSMRBS), new ST_Search_FSMRBS(this));
+
+        GetComponent<ST_StateMachine_FSMRBS>().SetStates(states);
+    }
+    
+    //check is there are enemy tanks withing FOV
+    void CheckTargetSpotted()
+    {
+        if (enemyTanksFound.Count > 0) { stats["enemySpotted"] = true; }
+        else { stats["enemySpotted"] = false; }
+    }
+
+    //Check if enTank is withing fire range
+    void CheckTargetReached()
+    {
+        float dist = Vector3.Distance(transform.position, enemyTanksFound.Keys.First().transform.position);
+
+        if (dist < 35f) { stats["targetReached"] = true; }
+        else { stats["targetReached"] = false;}
+    }
+
+    #region extras
     /// <summary>
     /// Returns float value of remaining health.
     /// </summary>
@@ -302,5 +342,5 @@ public class ST_SmartTankFSMRBS : AITank
             return a_BasesFound;
         }
     }
-
+    #endregion extras
 }
