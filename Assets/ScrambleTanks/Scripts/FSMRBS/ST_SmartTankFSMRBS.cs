@@ -42,8 +42,8 @@ public class ST_SmartTankFSMRBS : AITank
     /// </summary>
     public override void AITankStart()
     {
-        //InitialiseFacts();
-        //InitialiseRules();
+        InitialiseFacts();
+        InitialiseRules();
 
     }
 
@@ -199,20 +199,24 @@ public class ST_SmartTankFSMRBS : AITank
 
     void InitialiseFacts()
     {
-        //stats.Add("lowHealth_FSMRBS", lowHealth);
-        //stats.Add("lowFuel_FSMRBS", lowFuel);
-        //stats.Add("lowAmmo_FSMRBS", lowAmmo);
+        stats.Add("lowHealth_FSMRBS", lowHealth);
+        stats.Add("lowFuel_FSMRBS", lowFuel);
+        stats.Add("lowAmmo_FSMRBS", lowAmmo);
 
-        //stats.Add("attackState_FSMRBS", false);
-        //stats.Add("chaseState_FSMRBS", false);
-        //stats.Add("kitingState_FSMRBS", false);
-        //stats.Add("retreatState_FSMRBS", false);
-        //stats.Add("searchState_FSMRBS", false);
+        stats.Add("attackState_FSMRBS", false);
+        stats.Add("chaseState_FSMRBS", false);
+        stats.Add("kitingState_FSMRBS", false);
+        stats.Add("retreatState_FSMRBS", false);
+        stats.Add("searchState_FSMRBS", false);
+
+        stats.Add("targetSpotted", false);
+        stats.Add("searchState", false);
+        stats.Add("", false);
     }
 
     void InitialiseRules()
     {
-        //rules.AddRule(new Rule("", "", typeof(), Rule.Predicate.));
+        rules.AddRule(new ST_Rule("targetSpotted", "searchState_FSMRBS", typeof(ST_Search_FSMRBS), ST_Rule.Predicate.nAnd));
     }
 
     /// <summary>

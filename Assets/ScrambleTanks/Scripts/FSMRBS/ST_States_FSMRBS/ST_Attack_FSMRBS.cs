@@ -5,22 +5,43 @@ using UnityEngine;
 
 public class ST_Attack_FSMRBS : ST_BaseTankState
 {
+    private ST_SmartTankFSMRBS smartTank;
+    float time;
+
+    public ST_Attack_FSMRBS(ST_SmartTankFSMRBS smartTank)
+    {
+        this.smartTank = smartTank;
+    }
+
     // setting up to enter the state
     public override Type EnterState()
     {
-
+        smartTank.stats["attackState"] = true;
         return null;
     }
 
     // anything that needs to be reset or changed once the player leaves the stage
     public override Type LeaveState()
     {
+        smartTank.stats["attackState"] = false;
         return null;
     }
 
     // logic that runs every physics update inside of the controller
     public override Type StateLogic()
     {
+        time += Time.deltaTime;
+
+        //state swap conditions
+        if (time > 1f)
+        {
+            if (smartTank.stats["lowHealth"] == true) { return typeof(ST_Retreat_FSMRBS);} //when low health, retreat
+            if (smartTank.stats["lowFuel"] == true) { return typeof(ST_Retreat_FSMRBS); } // when low fuel, retreat
+            if (smartTank.stats["lowAmmo"] == true) { return typeof(ST_Retreat_FSMRBS); }// when low ammo, retreat
+            if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS);} //when reached target, attack
+            else { return typeof(ST_Search_FSMRBS); } //if none of those, search
+        }
+
         return null;
     }
 }

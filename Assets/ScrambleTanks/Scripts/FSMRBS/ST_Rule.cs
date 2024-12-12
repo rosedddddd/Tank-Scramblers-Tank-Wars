@@ -11,7 +11,7 @@ public class ST_Rule
     public Type consequentState;
     public Predicate compare;
     public enum Predicate
-    { And, Or, nAnd}
+    {And, Or, nAnd}
 
     public ST_Rule(string antecedentA, string antecedentB, Type consequentState, Predicate compare)
     {
