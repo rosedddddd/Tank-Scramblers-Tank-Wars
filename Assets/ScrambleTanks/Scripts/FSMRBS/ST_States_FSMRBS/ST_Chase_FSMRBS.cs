@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ST_Chase_FSMRBS : ST_Base_FSMRBS
 {
     private ST_SmartTankFSMRBS smartTank;
+    float time;
 
     public ST_Chase_FSMRBS(ST_SmartTankFSMRBS smartTank)
     {
@@ -29,13 +31,23 @@ public class ST_Chase_FSMRBS : ST_Base_FSMRBS
     // logic that runs every physics update inside of the controller
     public override Type StateLogic()
     {
-        foreach (var item in smartTank.rules.GetRules)
+        time += Time.deltaTime;
+
+        //state swap conditions
+        if (time > 1f)
         {
-            if (item.CheckRule(smartTank.stats) != null)
-            {
-                return item.CheckRule(smartTank.stats);
-            }
+            //being scary and chasing the tank
+            if (smartTank.stats["targetSpotted"] == true) {return typeof(ST_Chase_FSMRBS);}//when target spotted but not yet reached chase
+            if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS);} //when reached target switch to attack
+
+            //if low on resources dont be agressive and retreat and search for them
+            if (smartTank.stats["lowHealth_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS);} //when low health, retreat
+            if (smartTank.stats["lowFuel_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } // when low fuel, retreat
+            if (smartTank.stats["lowAmmo_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); }// when low ammo, retreat
+            
+            else { return typeof(ST_Search_FSMRBS); } //if none of those, search
         }
+
         return null;
     }
 }
