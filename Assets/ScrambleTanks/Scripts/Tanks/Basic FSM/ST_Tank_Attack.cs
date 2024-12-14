@@ -24,22 +24,21 @@ public class ST_Tank_Attack : ST_BaseTankState
     // logic that runs every physics update inside of the controller
     public override Type StateLogic()
     {
-        // hey Dahna, I wrote a sort of implementation of the last stand and before I actually changed anything I wanted to run it by you
-        //if (tank.lastStand && tank.TankCurrentAmmo != 0)
-        //{
-        //    if (tank.VisibleEnemyTanks.Count > 0) //when tanks in sight
-        //    {
-        //        float dist = Vector3.Distance(tank.transform.position, tank.VisibleEnemyTanks.Keys.First().transform.position);
-        //        Vector3 normalized = (tank.transform.position - tank.VisibleEnemyTanks.Keys.First().transform.position).normalized;
-        //        tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * tank.attackDistance;
-        //
-        //        tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
-        //        tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
-        //        tank.TurretFireAtPoint(tank.VisibleEnemyTanks.Keys.First());
-        //
-        //        return typeof(ST_Tank_Attack);
-        //    } // if nothing is seen then it continues on in to the usual attack state where it can switch to different States
-        //}
+        if (tank.lastStand && tank.TankCurrentAmmo != 0)
+        {
+           if (tank.VisibleEnemyTanks.Count > 0) //when tanks in sight
+           {
+               float dist = Vector3.Distance(tank.transform.position, tank.VisibleEnemyTanks.Keys.First().transform.position);
+               Vector3 normalized = (tank.transform.position - tank.VisibleEnemyTanks.Keys.First().transform.position).normalized;
+               tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * tank.attackDistance;
+        
+               tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
+               tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
+               tank.TurretFireAtPoint(tank.VisibleEnemyTanks.Keys.First());
+        
+               return typeof(ST_Tank_Attack);
+           } // if nothing is seen then it continues on in to the usual attack state where it can switch to different States
+        }
 
 
         if (tank.VisibleEnemyTanks.Count > 0) //when tanks in sight
