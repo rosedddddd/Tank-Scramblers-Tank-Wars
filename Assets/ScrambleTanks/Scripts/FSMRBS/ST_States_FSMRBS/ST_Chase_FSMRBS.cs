@@ -43,6 +43,8 @@ public class ST_Chase_FSMRBS : ST_Base_FSMRBS
             if (smartTank.stats["lowFuel_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } // when low fuel chage retreat
             if (smartTank.stats["lowAmmo_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); }// when low ammo no point attacj retreat
             if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS); } //when reached target, attack
+            if (smartTank.stats["targetReachable"] == true) { return typeof(ST_Chase_FSMRBS); } //when target reachable chase
+
             else { return typeof(ST_Search_FSMRBS); } //if none of those, search
         }
 

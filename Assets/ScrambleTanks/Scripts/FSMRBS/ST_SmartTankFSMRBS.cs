@@ -261,10 +261,9 @@ public class ST_SmartTankFSMRBS : AITank
     void targetReachable()
     {
         float dist = Vector3.Distance(transform.position, enemyTanksFound.Keys.First().transform.position);
-        if (enemyTanksFound.Count > 0 && dist > 35f)
-        {
-            stats["targetReachable"] = true;
-        }
+        if (enemyTanksFound.Count > 0 && dist > 35f) { stats["targetReachable"] = true; }
+        else { stats["targetReachable"] = false; }
+    }
 
     #region extras
     /// <summary>
