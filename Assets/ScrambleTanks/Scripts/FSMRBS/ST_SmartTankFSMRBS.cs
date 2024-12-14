@@ -240,7 +240,7 @@ public class ST_SmartTankFSMRBS : AITank
 
         stats.Add("enemySpotted", false);
         stats.Add("targetReached", false);
-        stats.Add("targetReachable", false);
+        stats.Add("hasKited", false);
     }
 
     void InitialiseRules()
@@ -249,8 +249,10 @@ public class ST_SmartTankFSMRBS : AITank
         rules.AddRule(new ST_Rule("enemySpotted", "searchState_FSMRBS", typeof(ST_Search_FSMRBS), ST_Rule.Predicate.nAnd));
         //if target seen but not reachable, Chase
         rules.AddRule(new ST_Rule("enemySpotted", "searchState_FSMRBS", typeof(ST_Chase_FSMRBS), ST_Rule.Predicate.And));
+        //if tank hasn't kited, enter kit state
+        rules.AddRule(new ST_Rule("targetReachable", "chaseState_FSMRBS", typeof(ST_Kiting_FSMRBS), ST_Rule.Predicate.And));
         //if target reachable and chasing
-        rules.AddRule(new ST_Rule("targetReachable", "chaseState_FSMRBS", typeof(ST_Attack_FSMRBS), ST_Rule.Predicate.And));
+        rules.AddRule(new ST_Rule("hasKited", "targetReachable", "chaseState_FSMRBS", typeof(ST_Attack_FSMRBS), ST_Rule.Predicate.And));
         //if low health, low fuel or low ammo, flee
         rules.AddRule(new ST_Rule("lowHealth_FSMRBS", "lowAmmo_FSMRBS","lowFuel_FSMRBS", typeof(ST_Retreat_FSMRBS), ST_Rule.Predicate.Or));
 
@@ -284,12 +286,6 @@ public class ST_SmartTankFSMRBS : AITank
 
         if (dist < 35f) { stats["targetReached"] = true; }
         else { stats["targetReached"] = false;}
-    }
-    void targetReachable()
-    {
-        float dist = Vector3.Distance(transform.position, enemyTanksFound.Keys.First().transform.position);
-        if (enemyTanksFound.Count > 0 && dist > 35f) { stats["targetReachable"] = true; }
-        else { stats["targetReachable"] = false; }
     }
 
     #region extras
