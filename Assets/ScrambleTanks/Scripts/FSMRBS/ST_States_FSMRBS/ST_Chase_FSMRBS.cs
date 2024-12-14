@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ST_Chase_FSMRBS : ST_Base_FSMRBS
@@ -31,23 +32,46 @@ public class ST_Chase_FSMRBS : ST_Base_FSMRBS
     // logic that runs every physics update inside of the controller
     public override Type StateLogic()
     {
-        time += Time.deltaTime;
 
-        //state swap conditions
+        var visibleEnemies = smartTank.VisibleEnemyTanks;
+        float enemyDist = Vector3.Distance(smartTank.transform.position, smartTank.VisibleEnemyTanks.Keys.First().transform.position);
+
+
         if (time > 1f)
         {
-            //being scary and chasing the tank
-            if (smartTank.stats["enemySpotted"] == true) {return typeof(ST_Chase_FSMRBS);}//when target spotted but not yet reached chase
-            if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS);} //when reached target switch to attack
+            if (smartTank.stats["lowHealth_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } //when low health switch toretreat
+            if (smartTank.stats["lowFuel_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } // when low fuel chage retreat
+            if (smartTank.stats["lowAmmo_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); }// when low ammo no point attacj retreat
+            if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS); } //when reached target, attack
+            if (smartTank.stats["targetReachable"] == true) { return typeof(ST_Chase_FSMRBS); } //when target reachable chase
 
-            //if low on resources dont be agressive and retreat and search for them
-            if (smartTank.stats["lowHealth_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS);} //when low health, retreat
-            if (smartTank.stats["lowFuel_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } // when low fuel, retreat
-            if (smartTank.stats["lowAmmo_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); }// when low ammo, retreat
-            
             else { return typeof(ST_Search_FSMRBS); } //if none of those, search
         }
 
+
+        if ((visibleEnemies.Count > 0 && enemyDist > 35f) || smartTank.VisibleConsumables.Count > 0)
+        {
+            if (enemyDist > 35f)
+            {
+                smartTank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible enemy
+                smartTank.TurretFaceWorldPoint(smartTank.VisibleEnemyTanks.Keys.First());//pointing turret at enemy
+                Debug.Log("chasing enemy");
+                return typeof(ST_Chase_FSMRBS);//stay in chase
+
+            }
+            else if (smartTank.VisibleConsumables.Count > 0)
+            {
+                smartTank.FollowPathToWorldPoint(smartTank.VisibleConsumables.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible consumable prioritising
+                return typeof(ST_Chase_FSMRBS);
+            }
+
+        }
+        else
+        {
+            Debug.Log("close enough switching to attack");
+            return typeof(ST_Attack_FSMRBS);//when timer runs out tank attacks
+
+        }
         return null;
     }
 }

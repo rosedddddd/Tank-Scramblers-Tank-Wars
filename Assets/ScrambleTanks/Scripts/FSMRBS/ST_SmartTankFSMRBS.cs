@@ -240,6 +240,7 @@ public class ST_SmartTankFSMRBS : AITank
 
         stats.Add("enemySpotted", false);
         stats.Add("targetReached", false);
+        stats.Add("targetReachable", false);
     }
 
     void InitialiseRules()
@@ -283,6 +284,12 @@ public class ST_SmartTankFSMRBS : AITank
 
         if (dist < 35f) { stats["targetReached"] = true; }
         else { stats["targetReached"] = false;}
+    }
+    void targetReachable()
+    {
+        float dist = Vector3.Distance(transform.position, enemyTanksFound.Keys.First().transform.position);
+        if (enemyTanksFound.Count > 0 && dist > 35f) { stats["targetReachable"] = true; }
+        else { stats["targetReachable"] = false; }
     }
 
     #region extras
