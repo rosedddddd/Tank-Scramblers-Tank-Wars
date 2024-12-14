@@ -58,10 +58,10 @@ public class ST_Tank_Search : ST_BaseTankState
             return stateSwitchDescision();
         }
         
-        if (tank.baseDestroyed && tank.lastSeenTimer > 2) return typeof(ST_Tank_Guard);
+        if (tank.baseDestroyed && tank.lastSeenTimer > 2) return typeof(ST_Tank_Guard); // guard if you aren't near you aren't already in the area
 
 
-        if (tank.VisibleConsumables.Count > 0)
+        if (tank.VisibleConsumables.Count > 0) // get goodies
         {
             tank.FollowPathToWorldPoint(tank.VisibleConsumables.Keys.First(), 1);
             return null;
@@ -72,7 +72,7 @@ public class ST_Tank_Search : ST_BaseTankState
             if (!tank.lowAmmo && !tank.lowFuel) return typeof(ST_Tank_Attack);
         }
 
-        // by using return inside of each of the above if statements I am making the tank prioritize enemmies over consumables and consumables over bases
+        // by using return inside of each of the above if statements I am making the tank prioritize enemmies > consumables > bases
 
         
 
