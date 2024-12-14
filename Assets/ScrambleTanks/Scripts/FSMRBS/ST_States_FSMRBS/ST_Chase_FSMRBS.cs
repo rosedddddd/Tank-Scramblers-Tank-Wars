@@ -34,7 +34,7 @@ public class ST_Chase_FSMRBS : ST_Base_FSMRBS
     {
 
         var visibleEnemies = smartTank.VisibleEnemyTanks;
-        float enemyDist = Vector3.Distance(smartTank.transform.position, smartTank.enemyLastSeen.transform.position);
+        float enemyDist = Vector3.Distance(smartTank.transform.position, smartTank.VisibleEnemyTanks.Keys.First().transform.position);
 
 
         if ((visibleEnemies.Count > 0 && enemyDist > 35f) || smartTank.VisibleConsumables.Count > 0)
@@ -42,7 +42,7 @@ public class ST_Chase_FSMRBS : ST_Base_FSMRBS
             if (enemyDist > 35f)
             {
                 smartTank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible enemy
-                smartTank.TurretFaceWorldPoint(smartTank.enemyLastSeen.gameObject);//pointing turret at enemy
+                smartTank.TurretFaceWorldPoint(smartTank.VisibleEnemyTanks.Keys.First());//pointing turret at enemy
                 Debug.Log("chasing enemy");
                 return typeof(ST_Chase_FSMRBS);//stay in chase
 
