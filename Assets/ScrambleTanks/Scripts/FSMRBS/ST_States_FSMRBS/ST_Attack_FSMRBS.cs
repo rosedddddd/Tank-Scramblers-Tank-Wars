@@ -38,16 +38,15 @@ public class ST_Attack_FSMRBS : ST_Base_FSMRBS
         //state swap conditions
         if (time > 1f)
         {
-            if (smartTank.stats["lowHealth_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } //when low health, retreat
-            if (smartTank.stats["lowFuel_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } // when low fuel, retreat
-            if (smartTank.stats["lowAmmo_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); }// when low ammo, retreat
-            if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS); } //when reached target, attack
-            else { return typeof(ST_Search_FSMRBS); } //if none of those, search
+            if (smartTank.stats["lowHealth_FSMRBS"] == true) {Debug.Log("I retreat"); }//return typeof(ST_Retreat_FSMRBS); } //when low health, retreat
+            if (smartTank.stats["lowFuel_FSMRBS"] == true) { Debug.Log("I retreat");}//return typeof(ST_Retreat_FSMRBS); } // when low fuel, retreat
+            if (smartTank.stats["lowAmmo_FSMRBS"] == true) {Debug.Log("I retreat"); }//return typeof(ST_Retreat_FSMRBS); }// when low ammo, retreat
+            if (smartTank.stats["targetSpotted"] == true) { Debug.Log("I attack");}//return typeof(ST_Attack_FSMRBS); } //when reached target, attack
+            if (smartTank.stats["targetSpotted"] == false) { Debug.Log("I Search");}//return typeof(ST_Search_FSMRBS); } //if none of those, search
         }
 
         if (smartTank.VisibleEnemyTanks.Count > 0) //when tanks in sight
         {
-            Debug.LogError("I can a tank");
             float dist = Vector3.Distance(smartTank.transform.position, smartTank.VisibleEnemyTanks.Keys.First().transform.position);
             Vector3 normalized = (smartTank.transform.position - smartTank.VisibleEnemyTanks.Keys.First().transform.position).normalized;
             float circlingAngle = 90f;
@@ -85,9 +84,9 @@ public class ST_Attack_FSMRBS : ST_Base_FSMRBS
 
             if (t > 7) //when at 7 secs restart t and attack
             {
-                t = 0;
                 smartTank.TurretFaceWorldPoint(smartTank.enemyLastSeen.gameObject);
                 smartTank.TurretFireAtPoint(smartTank.VisibleEnemyTanks.Keys.First());
+                t = 0;
             }
             else if (dist < 25F) { t += Time.deltaTime; } //keep counting time if within distance
             smartTank.FollowPathToWorldPoint(smartTank.calcTransform.gameObject, 0.5f, smartTank.heuristicMode);
