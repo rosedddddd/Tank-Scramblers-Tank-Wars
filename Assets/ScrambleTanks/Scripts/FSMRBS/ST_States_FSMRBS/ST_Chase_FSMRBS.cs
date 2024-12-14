@@ -37,6 +37,16 @@ public class ST_Chase_FSMRBS : ST_Base_FSMRBS
         float enemyDist = Vector3.Distance(smartTank.transform.position, smartTank.VisibleEnemyTanks.Keys.First().transform.position);
 
 
+        if (time > 1f)
+        {
+            if (smartTank.stats["lowHealth_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } //when low health switch toretreat
+            if (smartTank.stats["lowFuel_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); } // when low fuel chage retreat
+            if (smartTank.stats["lowAmmo_FSMRBS"] == true) { return typeof(ST_Retreat_FSMRBS); }// when low ammo no point attacj retreat
+            if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS); } //when reached target, attack
+            else { return typeof(ST_Search_FSMRBS); } //if none of those, search
+        }
+
+
         if ((visibleEnemies.Count > 0 && enemyDist > 35f) || smartTank.VisibleConsumables.Count > 0)
         {
             if (enemyDist > 35f)
