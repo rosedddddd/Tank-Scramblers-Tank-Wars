@@ -27,7 +27,7 @@ public class ST_Tank_Kiting : ST_BaseTankState
     public override Type StateLogic()
     {
         //if health dropped too much, retreat
-        if (tank.TankCurrentHealth <= 75) { return typeof(ST_Tank_Retreat); }
+        if (tank.TankCurrentHealth <= 75) { return typeof(ST_Tank_Attack); }
         //time ran out, retreat
         if(t >= 15) { return typeof(ST_Tank_Attack);}
 

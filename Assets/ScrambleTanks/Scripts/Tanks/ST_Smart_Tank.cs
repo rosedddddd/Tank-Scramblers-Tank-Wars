@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using static AStar;
 
@@ -17,6 +18,7 @@ public class ST_Smart_Tank : AITank
     public ST_FSM controller; // the tank controller
     public Transform calcTransform; //a transform used for more complex calculations
     public Transform enemyLastSeen; //last seen spot of the enemmy tank. updated inside of AITankUpdate
+    public Transform baseWaypoint; // the general vicinity of our bases so we always have a reference of their general vicinity
 
     public LayerMask raycastLayers; // layermask used to detect obstacles in the way of the tank's pathfinding via raycast
 
@@ -37,25 +39,32 @@ public class ST_Smart_Tank : AITank
     public int ammoFleeThreshold; // low ammo. retreat
     public float fuelFleeThreshold; // low fuel, retreat
     public float fuelLastStandThreshold; //low health and low fuel, go all in
+    public float maxTimeRetreating = 20;
     public HeuristicMode heuristicMode; /*!< <c>heuristicMode</c> Which heuristic used for find path. */
 
     [HideInInspector]
     public float lastSeenTimer = 5000; // the time since the enemmy tank was last seen
+    [HideInInspector]
+    public float timeSpentInRetreatState;
 
-    // a number of self explanitory getters used to simplify state conditional checks
+    // a number of simple getters used to simplify state conditional checks
     public bool lowHealth { get { return TankCurrentHealth < healthFleeThreshold; } }
     public bool lowFuel { get { return TankCurrentFuel < fuelFleeThreshold; } }
-    public bool lowAmmo { get { return TankCurrentHealth < healthFleeThreshold; } }
+    public bool lowAmmo { get { return TankCurrentAmmo < healthFleeThreshold; } }
     public bool lastStand { get { return lowHealth && lowFuel; } }
 
-    public bool attacked = false;
-    public bool takenBackshot = false; // if the tank has been attacked from behind
+    public bool attacked { get { return lastFrameHealth > TankCurrentHealth; } }
+    public bool takenBackshot { get { return attacked && VisibleEnemyTanks.Count == 0; } } // if the tank has been attacked from behind
+    public bool baseDestroyed { get { return lastFrameBaseCount > livingBasesCount; } }
+
+    public bool tooCowardly { get { return timeSpentInRetreatState > maxTimeRetreating; } }
 
     public bool hasKited = false; // if the tank has entered the kiting state before.
                                   // the kiting state should only happen when first seeing the enemmy to waste their ammo
 
     float lastFrameHealth; // used to check if the tank has taken damage inside the AITankUpdate function
-    
+    float lastFrameBaseCount; // used to check if one of our bases has been destroyed
+
     /// <summary>
     ///WARNING, do not use void <c>Start()</c> function, use this <c>AITankStart()</c> function instead if you want to use Start method from Monobehaviour.
     ///Use this function to initialise your tank variables etc.
@@ -63,9 +72,21 @@ public class ST_Smart_Tank : AITank
     public override void AITankStart()
     {
         lastSeenTimer = 9999;
+
+        calcTransform = new GameObject("ST_CalcTransform").transform;
+        enemyLastSeen = new GameObject("ST_EnemmyLastSeen").transform;
+        baseWaypoint = new GameObject("ST_Base").transform;
+
+
         calcTransform.parent = null;
         enemyLastSeen.parent = null;
+        baseWaypoint.parent = null;
+
+        lastFrameBaseCount = livingBasesCount;
+
         InitializeStates();
+
+        controller.ControllerStart();
         
     }
 
@@ -83,13 +104,14 @@ public class ST_Smart_Tank : AITank
         }
         else lastSeenTimer += Time.deltaTime;
 
-
-        attacked = lastFrameHealth > TankCurrentHealth;
-        takenBackshot = attacked && VisibleEnemyTanks.Count == 0;
-
         controller.ControllerUpdate();
-        
+
+        Debug.Log(livingBasesCount);
+        Debug.Log(MyBases[0]);
+        Debug.Log(MyBases[1]);
+
         lastFrameHealth = TankCurrentHealth;
+        lastFrameBaseCount = livingBasesCount;
     }
 
     /// <summary>
@@ -112,6 +134,7 @@ public class ST_Smart_Tank : AITank
         controller.states.Add(typeof(ST_Tank_Attack), new ST_Tank_Attack());
         controller.states.Add(typeof(ST_Tank_Retreat), new ST_Tank_Retreat());
         controller.states.Add(typeof(ST_Tank_Kiting), new ST_Tank_Kiting());
+        controller.states.Add(typeof(ST_Tank_Guard), new ST_Tank_Guard());
         Debug.Log(controller.states.Count);
 
         //linking the states to the controller
@@ -121,6 +144,7 @@ public class ST_Smart_Tank : AITank
         {
             stateReference.tank = controller.tank;
         }
+
         controller.ControllerStart();
 
         //controller.AttemptStateChange(typeof(ST_Tank_Search)); // initial state of the tank
@@ -297,6 +321,21 @@ public class ST_Smart_Tank : AITank
         get
         {
             return a_GetMyBases;
+        }
+    }
+
+
+    public int livingBasesCount // gets the number of bases which haven't been destroyed
+    {
+        get
+        {
+            int livingBases = 0;
+            foreach (var myBase in MyBases)
+            {
+                if (myBase != null) livingBases++;
+            }
+
+            return livingBases;
         }
     }
 

@@ -24,6 +24,24 @@ public class ST_Tank_Attack : ST_BaseTankState
     // logic that runs every physics update inside of the controller
     public override Type StateLogic()
     {
+        // hey Dahna, I wrote a sort of implementation of the last stand and before I actually changed anything I wanted to run it by you
+        //if (tank.lastStand && tank.TankCurrentAmmo != 0)
+        //{
+        //    if (tank.VisibleEnemyTanks.Count > 0) //when tanks in sight
+        //    {
+        //        float dist = Vector3.Distance(tank.transform.position, tank.VisibleEnemyTanks.Keys.First().transform.position);
+        //        Vector3 normalized = (tank.transform.position - tank.VisibleEnemyTanks.Keys.First().transform.position).normalized;
+        //        tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * tank.attackDistance;
+        //
+        //        tank.FollowPathToWorldPoint(tank.calcTransform.gameObject, 0.5f, tank.heuristicMode);
+        //        tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
+        //        tank.TurretFireAtPoint(tank.VisibleEnemyTanks.Keys.First());
+        //
+        //        return typeof(ST_Tank_Attack);
+        //    } // if nothing is seen then it continues on in to the usual attack state where it can switch to different States
+        //}
+
+
         if (tank.VisibleEnemyTanks.Count > 0) //when tanks in sight
         {
             float dist = Vector3.Distance(tank.transform.position, tank.VisibleEnemyTanks.Keys.First().transform.position);
@@ -53,12 +71,12 @@ public class ST_Tank_Attack : ST_BaseTankState
             if (t > 5) //at 5 seconds round out
             {
                 normalized = Quaternion.AngleAxis(circlingAngleBeforeReadyingUpToShoot, Vector3.up) * normalized;
-                tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * 20;
+                tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * tank.attackDistance;
             }
             else // any other time close in
             {
                 normalized = Quaternion.AngleAxis(circlingAngle, Vector3.up) * normalized;
-                tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * 5;
+                tank.calcTransform.position = tank.VisibleEnemyTanks.Keys.First().transform.position + normalized * tank.criclingDistance;
             }
 
             if (t > 7) //when at 7 secs restart t and attack
@@ -73,7 +91,10 @@ public class ST_Tank_Attack : ST_BaseTankState
         }
 
         //if low health/ammo/fuel, retreat
-        if (tank.lowHealth || tank.lowAmmo || tank.lowFuel) return typeof(ST_Tank_Retreat);
+        if ((tank.lowHealth || tank.lowAmmo || tank.lowFuel) &&
+            !(tank.VisibleEnemyBases.Count > 0 && tank.VisibleEnemyTanks.Count == 0 && !tank.lowAmmo) && // still attacks enemmy bases when low on health/fuel
+            !tank.tooCowardly) 
+            return typeof(ST_Tank_Retreat);
 
         //if enemy tank out of FOV, switch to search state
         if (tank.VisibleEnemyTanks.Count <= 0 && tank.VisibleEnemyBases.Count <= 0)
@@ -98,8 +119,8 @@ public class ST_Tank_Attack : ST_BaseTankState
             GameObject closestBase = null;
 
             //chose closest base
-            foreach (GameObject item in tank.VisibleEnemyBases.Keys) { 
-
+            foreach (GameObject item in tank.VisibleEnemyBases.Keys) {
+                if (item == null) continue;
                 if (Vector3.Distance(item.transform.position, tank.transform.position) < closestDistance)
                 {
                     closestDistance = Vector3.Distance(item.transform.position, tank.transform.position);

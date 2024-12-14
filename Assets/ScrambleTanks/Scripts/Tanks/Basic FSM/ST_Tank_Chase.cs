@@ -26,7 +26,7 @@ public class ST_Tank_Chase : ST_BaseTankState
         // Get the dictionary of visible enemy tanks.
         var visibleEnemies = tank.VisibleEnemyTanks;
         //creating a variable for enemy distance to use in the if statements
-        float enemyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.transform.position);
+        float enemyDist = Vector3.Distance(tank.transform.position, tank.enemyLastSeen.position);
         
         //if the tank can see an enemy and its over 35 away or it can see a consumable
         if ((visibleEnemies.Count > 0 && enemyDist > 35f ) || tank.VisibleConsumables.Count > 0)
@@ -35,7 +35,7 @@ public class ST_Tank_Chase : ST_BaseTankState
             //get closer to the enemy if its 35 away
             if (enemyDist > 35f)
             {
-                tank.FollowPathToWorldPoint(visibleEnemies.Keys.First(), normalizedSpeed: 1.0f);//moving towards the visible enemy
+                tank.FollowPathToWorldPoint(tank.enemyLastSeen.gameObject, normalizedSpeed: 1.0f);//moving towards the visible enemy
                 tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);//pointing turret at enemy
                 Debug.Log("chasing enemy");
                 return typeof(ST_Tank_Chase);//stay in chase
