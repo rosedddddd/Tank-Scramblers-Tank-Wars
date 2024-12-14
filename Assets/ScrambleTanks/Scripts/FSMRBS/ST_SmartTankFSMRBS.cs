@@ -238,14 +238,14 @@ public class ST_SmartTankFSMRBS : AITank
         stats.Add("retreatState_FSMRBS", false);
         stats.Add("searchState_FSMRBS", false);
 
-        stats.Add("targetSpotted", false);
+        stats.Add("enemySpotted", false);
         stats.Add("targetReached", false);
     }
 
     void InitialiseRules()
     {
         //if not seen and not in search, Search
-        rules.AddRule(new ST_Rule("enemytSpotted", "searchState_FSMRBS", typeof(ST_Search_FSMRBS), ST_Rule.Predicate.nAnd));
+        rules.AddRule(new ST_Rule("enemySpotted", "searchState_FSMRBS", typeof(ST_Search_FSMRBS), ST_Rule.Predicate.nAnd));
         //if target seen but not reachable, Chase
         rules.AddRule(new ST_Rule("enemySpotted", "searchState_FSMRBS", typeof(ST_Chase_FSMRBS), ST_Rule.Predicate.And));
         //if target reachable and chasing
@@ -270,7 +270,7 @@ public class ST_SmartTankFSMRBS : AITank
     }
     
     //check is there are enemy tanks withing FOV
-    void CheckTargetSpotted()
+    void CheckEnemySpotted()
     {
         if (enemyTanksFound.Count > 0) { stats["enemySpotted"] = true; }
         else { stats["enemySpotted"] = false; }

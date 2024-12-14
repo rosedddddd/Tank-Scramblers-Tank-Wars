@@ -37,7 +37,7 @@ public class ST_Chase_FSMRBS : ST_Base_FSMRBS
         if (time > 1f)
         {
             //being scary and chasing the tank
-            if (smartTank.stats["targetSpotted"] == true) {return typeof(ST_Chase_FSMRBS);}//when target spotted but not yet reached chase
+            if (smartTank.stats["enemySpotted"] == true) {return typeof(ST_Chase_FSMRBS);}//when target spotted but not yet reached chase
             if (smartTank.stats["targetReached"] == true) { return typeof(ST_Attack_FSMRBS);} //when reached target switch to attack
 
             //if low on resources dont be agressive and retreat and search for them
