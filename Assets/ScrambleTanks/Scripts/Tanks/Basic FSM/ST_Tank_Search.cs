@@ -35,13 +35,16 @@ public class ST_Tank_Search : ST_BaseTankState
     {
         if (tank.VisibleEnemyTanks.Count > 0)
         {
-            Debug.Log(tank.VisibleEnemyTanks.Count);
+            //Debug.Log(tank.VisibleEnemyTanks.Count);
             if (!tank.hasKited) { tank.hasKited = true; return typeof(ST_Tank_Kiting); } // only go in to the kiting state the first time you see the enemmy
+            if (tank.lowHealth || tank.lowAmmo || tank.lowFuel) return typeof(ST_Tank_Retreat);
 
             //check smart tank for comments on these variables
-                if (tank.lastStand) return typeof(ST_Tank_Chase);
-            if (tank.lowHealth || tank.lowAmmo || tank.lowFuel) return typeof(ST_Tank_Retreat);
-            return typeof(ST_Tank_Chase); // if all condingencies are not met after seeing the enemmy tank, just attack
+            if (tank.lastStand) return typeof(ST_Tank_Chase);
+            return typeof(ST_Tank_Chase);
+
+            
+            //else return typeof(ST_Tank_Chase); // if all condingencies are not met after seeing the enemmy tank, just attack
         }
         return null;
     }

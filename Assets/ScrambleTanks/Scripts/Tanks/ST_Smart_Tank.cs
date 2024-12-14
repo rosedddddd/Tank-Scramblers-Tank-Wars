@@ -50,7 +50,7 @@ public class ST_Smart_Tank : AITank
     // a number of simple getters used to simplify state conditional checks
     public bool lowHealth { get { return TankCurrentHealth < healthFleeThreshold; } }
     public bool lowFuel { get { return TankCurrentFuel < fuelFleeThreshold; } }
-    public bool lowAmmo { get { return TankCurrentAmmo < healthFleeThreshold; } }
+    public bool lowAmmo { get { return TankCurrentAmmo < ammoFleeThreshold; } }
     public bool lastStand { get { return lowHealth && lowFuel; } }
 
     public bool attacked { get { return lastFrameHealth > TankCurrentHealth; } }
@@ -106,9 +106,9 @@ public class ST_Smart_Tank : AITank
 
         controller.ControllerUpdate();
 
-        Debug.Log(livingBasesCount);
-        Debug.Log(MyBases[0]);
-        Debug.Log(MyBases[1]);
+        // Debug.Log(livingBasesCount);
+        // Debug.Log(MyBases[0]);
+        // Debug.Log(MyBases[1]);
 
         lastFrameHealth = TankCurrentHealth;
         lastFrameBaseCount = livingBasesCount;

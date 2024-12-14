@@ -6,12 +6,11 @@ using UnityEngine;
 
 public class ST_Tank_Retreat : ST_BaseTankState
 {
-    float retreatTime;
 
     // setting up to enter the state
     public override Type EnterState()
     {
-        retreatTime = 0f;  // Reset retreatTime when entering the retreat state
+        tank.timeSpentInRetreatState = 0f;  // Reset retreatTime when entering the retreat state
         return null;
     }
 
@@ -26,8 +25,6 @@ public class ST_Tank_Retreat : ST_BaseTankState
     {
         //if low health and low ammo go into attack
         if (tank.lastStand) { return typeof(ST_Tank_Attack); }
-
-        retreatTime += Time.deltaTime;
 
         //if health, ammo or fuel are low go look for consumables
         if (tank.lowHealth || tank.lowAmmo || tank.lowFuel)
@@ -51,7 +48,7 @@ public class ST_Tank_Retreat : ST_BaseTankState
         //if in good condition go back to search
         if (!tank.lowHealth && !tank.lowAmmo && !tank.lowFuel)
         {
-            //Debug.Log("Good Health! Back to search");
+            Debug.LogError("Good Health! Back to search");
             return typeof(ST_Tank_Search);
         }
         

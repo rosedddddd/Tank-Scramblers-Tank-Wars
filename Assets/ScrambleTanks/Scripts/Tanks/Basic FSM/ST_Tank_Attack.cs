@@ -90,8 +90,8 @@ public class ST_Tank_Attack : ST_BaseTankState
             tank.TurretFaceWorldPoint(tank.enemyLastSeen.gameObject);
         }
 
-        //if low health/ammo/fuel, retreat
-        if ((tank.lowHealth || tank.lowAmmo || tank.lowFuel) &&
+        //if low health/ammo, retreat
+        if ((tank.lowHealth || tank.lowAmmo) &&
             !(tank.VisibleEnemyBases.Count > 0 && tank.VisibleEnemyTanks.Count == 0 && !tank.lowAmmo) && // still attacks enemmy bases when low on health/fuel
             !tank.tooCowardly) 
             return typeof(ST_Tank_Retreat);
