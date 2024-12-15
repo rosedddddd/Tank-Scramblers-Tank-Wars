@@ -52,7 +52,7 @@ public class ST_Search_FSMRBS : ST_Base_FSMRBS
 
         if (smartTank.VisibleConsumables.Count > 0)
         {
-            smartTank.FollowPathToWorldPoint(smartTank.VisibleConsumables.gameObject.Keys.First(), 1f);
+            //smartTank.FollowPathToWorldPoint(smartTank.VisibleConsumables.Keys.First(), 1f);
             return null;
         }
 
