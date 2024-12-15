@@ -29,7 +29,7 @@ public class ST_Tank_Retreat : ST_BaseTankState
         //if health, ammo or fuel are low go look for consumables
         if (tank.lowHealth || tank.lowAmmo || tank.lowFuel)
         {
-            float dynamicSpeed = Mathf.Max(tank.TankCurrentFuel / 30,.3f);  // note for whoever first wrote this line
+            float dynamicSpeed = Mathf.Max(tank.TankCurrentFuel / 60,.3f);  // note for whoever first wrote this line
                                                                             // the speed of the tank is a 0-1 range while tank fuel is 0-100
                                                                             // just doing speed = tank fuel like how you were doing previously
                                                                             // would have no effect until tank fuel goes bellow 1

@@ -10,7 +10,7 @@ public class ST_Tank_Search : ST_BaseTankState
     float newPathTime = 10; // the number of seconds the timer bellow has
     float newPathTimer; // time before changing to a different random path
 
-    float scanDuration = 1.5f; // how long the tank pauses to scan it's surroundings in seconds
+    float scanDuration = 1.25f; // how long the tank pauses to scan it's surroundings in seconds
     float scanPause = 4; // how long to move the tank in-between scaning
     float timeAtScan; // used in scanning to make the turret always start out facing the front of the tank
     float scanTimer; // the timer that scanning is dictated by
@@ -22,7 +22,7 @@ public class ST_Tank_Search : ST_BaseTankState
     public override Type EnterState()
     {
 
-        return stateSwitchDescision();
+        return enemmyTankDescisions();
     }
 
     // anything that needs to be reset or changed once the player leaves the stage
@@ -31,16 +31,16 @@ public class ST_Tank_Search : ST_BaseTankState
         return null;
     }
 
-    public Type stateSwitchDescision()
+    public Type enemmyTankDescisions()
     {
         if (tank.VisibleEnemyTanks.Count > 0)
         {
             //Debug.Log(tank.VisibleEnemyTanks.Count);
             if (!tank.hasKited) { tank.hasKited = true; return typeof(ST_Tank_Kiting); } // only go in to the kiting state the first time you see the enemmy
+            if (tank.lastStand && tank.TankCurrentAmmo != 0) return typeof(ST_Tank_Attack);
             if (tank.lowHealth || tank.lowAmmo || tank.lowFuel) return typeof(ST_Tank_Retreat);
 
             //check smart tank for comments on these variables
-            if (tank.lastStand) return typeof(ST_Tank_Chase);
             return typeof(ST_Tank_Chase);
 
             
@@ -58,10 +58,10 @@ public class ST_Tank_Search : ST_BaseTankState
         // I know this double checks for visible enemmy tanks inside the function but otherwise it would exit the rest of it's original function
         if (tank.VisibleEnemyTanks.Count > 0) 
         {
-            return stateSwitchDescision();
+            return enemmyTankDescisions();
         }
         
-        if (tank.baseDestroyed && tank.lastSeenTimer > 2) return typeof(ST_Tank_Guard); // guard if you aren't near you aren't already in the area
+        if (tank.baseDestroyed) return typeof(ST_Tank_Guard);
 
 
         if (tank.VisibleConsumables.Count > 0) // get goodies
@@ -72,7 +72,7 @@ public class ST_Tank_Search : ST_BaseTankState
 
         if (tank.VisibleEnemyBases.Count > 0)
         {
-            if (!tank.lowAmmo && !tank.lowFuel) return typeof(ST_Tank_Attack);
+            if (!tank.lowAmmo) return typeof(ST_Tank_Attack);
         }
 
         // by using return inside of each of the above if statements I am making the tank prioritize enemmies > consumables > bases

@@ -131,16 +131,20 @@ public class ST_Tank_Attack : ST_BaseTankState
             //get distance between tank and closest base
             float baseDist = Vector3.Distance(tank.transform.position, closestBase.transform.position);
 
-            //if outside fire range, get close
-            if (baseDist > 35f)
+            if (baseDist > 10)
             {
-                tank.FollowPathToWorldPoint(closestBase, 1f, tank.heuristicMode); 
+                tank.FollowPathToWorldPoint(closestBase,1,tank.heuristicMode);
+                tank.TurretFaceWorldPoint(closestBase);
             }
-            //if within fire range, shoot
-            else if (baseDist < 35f)
+
+            if (baseDist <= 10 && t > 2) //when at 7 secs restart t and attack
             {
+                t = 0;
+                tank.TurretFaceWorldPoint(closestBase);
                 tank.TurretFireAtPoint(closestBase);
             }
+            else { t += Time.deltaTime; } //keep counting time if within distance
+
         }
         return null;
     }

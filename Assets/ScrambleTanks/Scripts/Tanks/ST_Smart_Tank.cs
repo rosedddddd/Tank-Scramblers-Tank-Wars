@@ -82,6 +82,8 @@ public class ST_Smart_Tank : AITank
         enemyLastSeen.parent = null;
         baseWaypoint.parent = null;
 
+        baseWaypoint.transform.position = transform.position; 
+
         lastFrameBaseCount = livingBasesCount;
 
         InitializeStates();
