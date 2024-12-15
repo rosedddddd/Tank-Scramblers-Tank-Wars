@@ -22,7 +22,7 @@ public class ST_Tank_Search : ST_BaseTankState
     public override Type EnterState()
     {
 
-        return enemmyTankDescisions();
+        return null;
     }
 
     // anything that needs to be reset or changed once the player leaves the stage
