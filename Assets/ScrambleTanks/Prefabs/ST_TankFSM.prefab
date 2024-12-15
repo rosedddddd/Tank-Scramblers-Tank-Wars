@@ -300,12 +300,22 @@ MonoBehaviour:
   controller: {fileID: 8149242142671988081}
   calcTransform: {fileID: 3322394534008834636}
   enemyLastSeen: {fileID: 1450709761607131827}
-  lastSeenTimer: 0
+  baseWaypoint: {fileID: 0}
+  raycastLayers:
+    serializedVersion: 2
+    m_Bits: 3073
+  kitingDistance: 30
+  criclingDistance: 5
+  attackDistance: 20
   healthFleeThreshold: 20
   ammoFleeThreshold: 1
-  fuelFleeThreshold: 40
+  fuelFleeThreshold: 20
   fuelLastStandThreshold: 10
+  maxTimeRetreating: 20
   heuristicMode: 0
+  lastSeenTimer: 0
+  timeSpentInRetreatState: 0
+  hasKited: 0
 --- !u!1 &2413098439540401682
 GameObject:
   m_ObjectHideFlags: 0
