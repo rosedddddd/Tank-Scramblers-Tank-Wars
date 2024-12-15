@@ -129,18 +129,15 @@ public class ST_Tank_Attack : ST_BaseTankState
             }
 
             //get distance between tank and closest base
-            float dist = Vector3.Distance(tank.transform.position, closestBase.transform.position);
-            Vector3 normalized = (tank.transform.position - closestBase.transform.position).normalized;
+            float baseDist = Vector3.Distance(tank.transform.position, closestBase.transform.position);
 
-            tank.calcTransform.position = closestBase.transform.position + normalized * 20;
-
-            if (dist > 20)
+            if (baseDist > 10)
             {
-                tank.FollowPathToWorldPoint(tank.calcTransform.gameObject,.5f,tank.heuristicMode);
+                tank.FollowPathToWorldPoint(closestBase,1,tank.heuristicMode);
                 tank.TurretFaceWorldPoint(closestBase);
             }
 
-            if (dist <= 20 && t > 2) //when at 7 secs restart t and attack
+            if (baseDist <= 10 && t > 2) //when at 7 secs restart t and attack
             {
                 t = 0;
                 tank.TurretFaceWorldPoint(closestBase);
