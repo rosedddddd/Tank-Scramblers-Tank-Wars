@@ -16,6 +16,9 @@ public class ST_Retreat_FSMRBS : ST_Base_FSMRBS
     public override Type EnterState()
     {
         smartTank.stats["retreatState_FSMRBS"] = true;
+
+        smartTank.GetComponent<Rigidbody>().isKinematic = false;
+
         return null;
     }
 
@@ -38,4 +41,5 @@ public class ST_Retreat_FSMRBS : ST_Base_FSMRBS
         }
         return null;
     }
+
 }
