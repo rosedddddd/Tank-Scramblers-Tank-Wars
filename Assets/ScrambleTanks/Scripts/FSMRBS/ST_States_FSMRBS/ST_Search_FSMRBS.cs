@@ -27,6 +27,9 @@ public class ST_Search_FSMRBS : ST_Base_FSMRBS
     public override Type EnterState()
     {
         smartTank.stats["searchState_FSMRBS"] = true;
+
+        smartTank.GetComponent<Rigidbody>().isKinematic = false;
+
         return null;
     }
 
